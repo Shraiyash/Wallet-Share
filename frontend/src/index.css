@@ -1,0 +1,882 @@
+/* Global Styles */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Montserrat:wght@400;700&display=swap');
+
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f0f4f8;
+  color: #333;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, input {
+  font-family: 'Montserrat', sans-serif;
+  /* font-weight: bold; */
+}
+
+.app-wrapper {
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+html, body #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+/* Main container to center all pages */
+.main-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+  padding: 40px 20px;
+}
+
+/* Centered Login Page */
+.login-container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+/* Connect Wallet Button */
+.connect-btn {
+  padding: 12px 24px;
+  font-size: 1.2rem;
+  margin-top: 20px;
+  background-color: #642dbd;
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+}
+
+.connect-btn:hover {
+  background-color: #7a37e8;
+}
+
+/* NavBar styling */
+.navbar {
+  width: 100%;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: center;
+  position: relative;
+  z-index: 10;
+  font-family: 'Garamond', sans-serif;
+}
+
+
+
+.nav-logo-container {
+  position: absolute;
+  left: 20px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  margin-top: 30px;
+}
+
+.nav-logo-link {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  text-decoration: none;
+}
+
+.nav-left {
+  position: absolute;
+  left: 0.5px;
+  top: 0; /* Ensure it’s flush with the top */
+  margin: 0;
+  padding: 0;
+}
+
+.nav-logo-img {
+  width: 60px;  /* Adjust size to your preference */
+  height: 40px;
+  display: block;
+  margin: 3px;  /* Remove any default margin */
+  padding: 0;
+  margin-top: 15px;
+  margin-left: 10px;
+}
+
+.nav-logo-text {
+  color: #ffffff;
+  font-size: 1.2rem;
+  /* font-weight: bold; */
+  margin-left: 4px;
+  margin-top: 15px;
+  font-family: 'Garamond', sans-serif;
+}
+
+/* .nav-logo {
+  text-decoration: none;
+} */
+
+.nav-dropdown {
+  background-color: transparent;
+}
+.nav-items {
+  /* background-color: #0070f3; */
+  padding: 8px 12px;
+  border-radius: 4px;
+  display: flex;
+  gap: 15px;
+}
+
+.nav-item {
+  color: #fff;
+  text-decoration: none;
+  padding: 6px 12px;
+  /* border: 20px; */
+  border-radius: 20px;
+  transition: background-color 0.3s;
+  font-size: 1.2rem;
+}
+
+.nav-item:hover {
+  background-color: #642dbd;
+  border-radius: 20px;
+}
+
+.nav-item.active {
+  background-color: #642dbd;;
+  border-radius: 20px;
+}
+
+.logout-btn {
+  background-color: transparent;
+  color: #fff;
+  border: 1px solid #fff;
+  padding: 6px 12px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+/* User Dropdown in Top Right */
+.user-dropdown {
+  position: relative;
+  top: 15px;
+  right: 40px;
+  z-index: 20;
+  font-family: 'Montserrat', sans-serif;
+  background-color: transparent;
+}
+
+.nav-right {
+  background-color: transparent;
+  position: absolute;
+  right: 30px;
+  top: 79%;
+  transform: translateY(-100%);
+}
+
+/* This btn is for the dropdown menu */
+.user-btn {
+  background-color: #fff;
+  color: #151313;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 29px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  margin-top: 0px;
+}
+
+.dropdown-content {
+  position: absolute;
+  top: 40px;
+  right: 0;
+  background-color: #fff;
+  color: #333;
+  border: 1px solid #ccc;
+  padding: 10px;
+  border-radius: 20px;
+  min-width: 100px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+  font-family: 'Montserrat', sans-serif;
+  font-size: small;
+}
+
+.admin-container{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  width: 100%;
+  padding: 40px 20px;
+}
+
+.assign-voter-container{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  width: 100%;
+  padding: 40px 20px;
+}
+
+.transfer-container{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  width: 100%;
+  padding: 40px 20px;
+}
+
+.deposit-container{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  width: 100%;
+  padding: 40px 20px;
+}
+
+.vote-new-container{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  width: 100%;
+  padding: 40px 20px;
+}
+
+.set-limit-container{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  width: 100%;
+  padding: 40px 20px;
+}
+
+/* Home Page Styles */
+.home-container {
+  /* Ensure home content is centered */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  width: 100%;
+  padding: 40px 20px;
+}
+
+.home-container h2 {
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+  color: #f6f7f8;
+}
+
+.home-container p {
+  font-size: 1.2rem;
+  line-height: 1.6;
+}
+
+/* Section Styles for Feature Pages */
+.section {
+  background: #fff;
+  padding: 20px;
+  margin: 20px auto;
+  border-radius: 8px;
+  max-width: 500px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+/* Form Inputs and Buttons */
+input {
+  padding: 10px;
+  margin: 10px 0;
+  width: 30%;
+  border: 1px solid #f6f4f4;
+  border-radius: 4px;
+  opacity: 0.8;
+  /* background-color: #fcfcfc; */
+  font-weight: bold;
+  font-family: 'Montserrat', sans-serif;
+  background: transparent;
+  color: #f6f6f6;
+}
+
+  /* button {
+    padding: 10px 20px;
+    margin: 10px 0;
+    border: none;
+    border-radius: 4px;
+    background-color: #0070f3;
+    color: #fff;
+    cursor: pointer;
+    font-size: 1rem;
+  } */
+
+button:hover {
+  background-color: #6021d4;
+}
+
+/* Glass Styles */
+/* glass-styles.css */
+.glass-container {
+  width: 95%;
+  max-width: 400px;              /* Container won't exceed 400px */
+  margin: 0 auto;                /* Center horizontally */
+  padding: 20px;
+  border-radius: 20px;
+
+  /* Glassmorphism effect: semi-transparent background + blur */
+  background: rgba(255, 255, 255, 0.1); 
+  backdrop-filter: blur(10px);  
+
+  /* For older Safari support, you may also need: 
+     -webkit-backdrop-filter: blur(10px);
+  */
+
+  /* Optional: some box shadow for depth */
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.glass-input {
+  width: 100%;
+  margin: 8px 0;
+  padding: 12px;
+  border: none;
+  outline: none;
+  border-radius: 20px;
+  font-family: 'Roboto', sans-serif;
+  font-weight: bold;
+  font-size: medium;
+
+  /* Slight translucent background for the input */
+  background: rgba(255, 255, 255, 0.2); 
+  color: #fff;                    /* White text for contrast on dark or glass background */
+
+  /* Optional transitions for focus/hover states */
+  transition: background 0.3s;
+}
+
+.glass-input::placeholder {
+  color: #f7f7f7;    
+  font-weight: none;              /* Placeholder text color */
+}
+
+.glass-input:focus {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.glass-button {
+  padding: 10px 20px;
+  margin: 30px 0;
+  border: none;
+  border-radius: 4px;
+  background-color: #0070f3;
+  color: #fff;
+  cursor: pointer;
+  font-size: 1rem;
+
+  transition: background 0.3s;
+}
+
+button {
+  padding: 10px 20px;
+  /* margin: 10px 0; */
+  margin-top: 10px;
+  border: none;
+  border-radius: 29px;
+  background: rgba(255, 255, 255, 0.1); 
+  /* backdrop-filter: blur(10px);     */
+  cursor: pointer;
+  font-size: 1rem;
+  color: #fff;
+
+  transition: background 0.3s;
+}
+
+.glass-button:hover {
+  background-color: #4189d2;   /* Darken on hover */
+}
+
+
+/* Container that splits the page into two halves */
+.deposit-page-container {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+/* Left side: text */
+.deposit-left {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.deposit-left h1 {
+  font-size: 2rem;
+  color: #f8f8f8;
+  text-align: center;
+  margin-top: 100px;
+}
+
+.total-deposit h3 {
+  font-size: 1.2rem;
+  color: #f8f8f8;
+  text-align: center;
+  margin-top: 10px;
+}
+
+/* Right side: GIF and input field stacked vertically */
+.deposit-right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  margin-top: 100px;
+  margin-left: 200px;
+}
+
+/* Container for the GIF */
+.deposit-gif-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+
+/* Transfer css */
+.transfer-container {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+/* Left side: text */
+.transfer-left {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  margin-left: 10px;
+  margin-top: 10px;
+  /* margin-right: 50px; */
+}
+
+.transfer-left h1 {
+  font-size: 2rem;
+  color: #f8f8f8;
+  text-align: center;
+  margin-top: 100px;
+  margin-left: 0px;
+}
+
+transfer-curr-bal h3 {
+  font-size: 1.2rem;
+  color: #f8f8f8;
+  text-align: center;
+  margin-top: 10px;
+}
+
+/* Right side: GIF and input field stacked vertically */
+.transfer-right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  margin-top: 50px;
+  margin-left: 300px;
+}
+
+/* Container for the GIF */
+.transfer-gif-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+
+
+/* set-limit css */
+.set-limit-container {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+/* Left side: text */
+.set-limit-left {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  margin-left: 50px;
+  margin-top: 50px;
+  /* margin-right: 50px; */
+}
+
+.set-limit-left h1 {
+  font-size: 2rem;
+  color: #f8f8f8;
+  text-align: center;
+  margin-top: 100px;
+  margin-left: 0px;
+}
+
+/* Right side: GIF and input field stacked vertically */
+.set-limit-right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  margin-top: 50px;
+  margin-left: 300px;
+}
+
+/* Container for the GIF */
+.set-limit-gif-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+/* vote css */
+.vote-new-container {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+/* Left side: text */
+.vote-new-left {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  margin-left: 50px;
+  margin-top: 140px;
+  /* margin-right: 50px; */
+}
+
+.vote-new-left h1 {
+  font-size: 2rem;
+  color: #f8f8f8;
+  text-align: center;
+  margin-top: 100px;
+  margin-left: 0px;
+}
+
+curr-owner h3 {
+  font-size: 1.2rem;
+  color: #f8f8f8;
+  text-align: center;
+  margin-top: 10px;
+}
+
+/* Right side: GIF and input field stacked vertically */
+.vote-new-right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  margin-top: 50px;
+  margin-left: 300px;
+}
+
+/* Container for the GIF */
+.new-owner-gif-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+/* assign voter css */
+.assign-voter-container {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+/* Left side: text */
+.assign-voter-left {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  margin-left: 50px;
+  margin-top: 50px;
+  /* margin-right: 50px; */
+}
+
+.assign-voter-left h1 {
+  font-size: 2rem;
+  color: #f8f8f8;
+  text-align: center;
+  margin-top: 100px;
+  margin-left: 0px;
+}
+
+/* Right side: GIF and input field stacked vertically */
+.assign-voter-right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  margin-top: 50px;
+  margin-left: 300px;
+}
+
+/* Container for the GIF */
+.voter-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+/* admin css */
+.admin-container {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+/* Left side: text */
+.admin-left {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  margin-left: 50px;
+  margin-top: 50px;
+  /* margin-right: 50px; */
+}
+
+.admin-left h1 {
+  font-size: 2rem;
+  color: #f8f8f8;
+  text-align: center;
+  margin-top: 100px;
+  margin-left: 0px;
+}
+
+.admin-left h2 {
+  font-size: 1.5rem;
+  color: #f8f8f8;
+  text-align: center;
+  margin-top: 10px;
+}
+
+.admin-left p {
+  font-size: 1.2rem;
+  color: #f8f8f8;
+  text-align: center;
+  margin-top: 10px;
+}
+
+.admin-left ul {
+  list-style-type: none;
+  font-size: 1.2rem;
+  color: #f8f8f8;
+  text-align: center;
+  margin-top: 10px;
+  /* padding: 50px; */
+}
+
+.admin-left li {
+  margin: 5px 0;
+  padding: 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+  font-size: 1rem;
+}
+
+.access-list {
+  margin-top: 20px;
+  background: rgba(255, 255, 255, 0.2);
+  padding: 15px;
+  border-radius: 8px;
+  color: #fff;
+  width: 100%;
+  max-width: 450px;
+}
+
+.access-list h2 {
+  margin-bottom: 10px;
+}
+
+.access-list ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.access-list li {
+  margin: 5px 0;
+  /* padding: 5px; */
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+  font-family: 'Montserrat', sans-serif;
+  color: #f5cc02;
+}
+
+/* Right side: GIF and input field stacked vertically */
+.admin-right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  margin-top: 50px;
+  margin-left: 300px;
+}
+
+/* Container for the GIF */
+.admin-gif-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.members-container {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 20px;
+  text-align: center;
+  /* background: rgba(0, 0, 0, 0.05); */
+  box-sizing: border-box;
+
+  /* max-width: 1200px; */
+  /* margin: 0 auto; */
+}
+
+.members-container h1 {
+  font-size: 2rem;
+  color: #fbfbfb;
+  margin-bottom: 20px;
+}
+
+
+/*CustomAlert.css */
+.alert-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.alert-modal {
+  width: 95%;
+  max-width: 400px;              /* Container won't exceed 400px */
+  margin: 0 auto;                /* Center horizontally */
+  padding: 20px;
+  border-radius: 9px;
+
+  /* Glassmorphism effect: semi-transparent background + blur */
+  background: rgba(255, 255, 255, 0.1); 
+  backdrop-filter: blur(10px);  
+
+  /* For older Safari support, you may also need: 
+     -webkit-backdrop-filter: blur(10px);
+  */
+
+  /* Optional: some box shadow for depth */
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.alert-modal p {
+  margin-bottom: 20px;
+  font-size: 1.1rem;
+  color: #ffffff;
+}
+
+.alert-modal button {
+  padding: 8px 16px;
+  border: none;
+  background-color: #7004bd;
+  color: #fff;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin: 0 5px;
+}
+
+.alert-modal button:hover {
+  background-color: #7a37e8;
+}
+
+.button-group {
+  display: flex;
+  justify-content: center;
+}

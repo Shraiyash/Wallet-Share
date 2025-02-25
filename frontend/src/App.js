@@ -1,89 +1,113 @@
 import React, { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
-import { motion } from 'framer-motion';
+import { BrowserRouter as Router, Routes, Route, Link, Navigate, NavLink } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import './App.css';
 
-// Replace with your deployed contract address (from Truffle migration):
-const contractAddress = "0x5041dc60397fe2c2bC8e8482AfA90277F30D2aBd";
+// Import your feature components
+import Home from './components/Home';
+import Deposit from './components/Deposit';
+import Transfer from './components/Transfer';
+import AssignVoter from './components/AssignVoter';
+import VoteNewOwner from './components/VoteNewOwner';
+import SetLimit from './components/SetLimit';
+import Admin from './components/Admin';
+import Members from './components/Members';
+import UserDropdown from './components/UserDropdown';
+import CustomAlert from './components/CustomAlert';
+
+const contractAddress = "0x85d17a400bEF4A86eab9A35baa8a814727EDb164";
 
 const contractABI = [
+  { "inputs": [], "stateMutability": "nonpayable", "type": "constructor" },
+  { "inputs": [{"internalType": "address", "name": "_voter", "type": "address"}], "name": "assignVoter", "outputs": [], "stateMutability": "nonpayable", "type": "function" },
+  { "inputs": [{"internalType": "address payable", "name": "_to", "type": "address"}, {"internalType": "uint256", "name": "amountToTransfer", "type": "uint256"}], "name": "transferFunds", "outputs": [], "stateMutability": "payable", "type": "function" },
+  { "inputs": [{"internalType": "address payable", "name": "_newOwner", "type": "address"}], "name": "voteForNewOwner", "outputs": [], "stateMutability": "nonpayable", "type": "function" },
+  { "inputs": [{"internalType": "address", "name": "_whoCanSend", "type": "address"}, {"internalType": "uint256", "name": "_restriction", "type": "uint256"}], "name": "setLimit", "outputs": [], "stateMutability": "nonpayable", "type": "function" },
+  { "inputs": [], "name": "owner", "outputs": [{"internalType": "address payable", "name": "", "type": "address"}], "stateMutability": "view", "type": "function" },
+  { "stateMutability": "payable", "type": "receive" },
+  { "inputs": [], "name": "deposit", "outputs": [], "stateMutability": "payable", "type": "function" },
   {
     "inputs": [],
-    "stateMutability": "nonpayable",
-    "type": "constructor"
-  },
-  {
-    "inputs": [{"internalType": "address", "name": "_voter", "type": "address"}],
-    "name": "assignVoter",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {"internalType": "address payable", "name": "_to", "type": "address"},
-      {"internalType": "uint256", "name": "amountToTransfer", "type": "uint256"}
+    "name": "getAllowedUsers",
+    "outputs": [
+      { "internalType": "address[]", "name": "", "type": "address[]" }
     ],
-    "name": "transferFunds",
-    "outputs": [],
-    "stateMutability": "payable",
-    "type": "function"
-  },
-  {
-    "inputs": [{"internalType": "address payable", "name": "_newOwner", "type": "address"}],
-    "name": "voteForNewOwner",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {"internalType": "address", "name": "_whoCanSend", "type": "address"},
-      {"internalType": "uint256", "name": "_restriction", "type": "uint256"}
-    ],
-    "name": "setLimit",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "owner",
-    "outputs": [{"internalType": "address payable", "name": "", "type": "address"}],
     "stateMutability": "view",
     "type": "function"
   },
   {
-    "stateMutability": "payable",
-    "type": "receive"
+    "inputs": [],
+    "name": "allowedUsers",
+    "outputs": [
+      { "internalType": "address[]", "name": "", "type": "address[]" }
+    ],
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    "inputs": [],
-    "name": "deposit",
-    "outputs": [],
-    "stateMutability": "payable",
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "name": "userDeposits",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
-  }
+  },
+  // Access control functions:
+  { "inputs": [], "name": "isAllowed", "outputs": [{"internalType": "bool", "name": "", "type": "bool"}], "stateMutability": "view", "type": "function" },
+  { "inputs": [{"internalType": "address", "name": "_addr", "type": "address"}], "name": "isOwner", "outputs": [{"internalType": "bool", "name": "", "type": "bool"}], "stateMutability": "view", "type": "function" },
+  { "inputs": [{"internalType": "address", "name": "user", "type": "address"}, {"internalType": "bool", "name": "allowed", "type": "bool"}], "name": "setAccess", "outputs": [], "stateMutability": "nonpayable", "type": "function" }
 ];
 
 function App() {
   const [provider, setProvider] = useState(null);
   const [walletAddress, setWalletAddress] = useState("");
-  const [contractOwner, setContractOwner] = useState("");
+  const [displayName, setDisplayName] = useState("");
   const [contract, setContract] = useState(null);
+  const [accessAllowed, setAccessAllowed] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [isOwner, setIsOwner] = useState(false);
+  const [accountBalance, setAccountBalance] = useState("");
   const [contractBalance, setContractBalance] = useState("");
-  const [depositAmount, setDepositAmount] = useState("");
-  const [transferAmount, setTransferAmount] = useState("");
-  const [transferTo, setTransferTo] = useState("");
-  const [voterAddress, setVoterAddress] = useState("");
-  const [newOwnerAddress, setNewOwnerAddress] = useState("");
-  const [setLimitAddress, setSetLimitAddress] = useState("");
-  const [limitAmount, setLimitAmount] = useState("");
+  const [ownerAddress, setOwnerAddress] = useState("");
+  const [alertData, setAlertData] = useState(null);
+
+  useEffect(() => {
+    if (loading) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+  }, [loading]);
+
+  const handleLogout = () => {
+    // Set the alertData to trigger a confirm modal.
+    setAlertData({
+      message: "Are you sure you want to log out?",
+      confirm: true,
+      onConfirm: () => {
+        localStorage.removeItem('welcomeShown');
+        localStorage.removeItem('userDepositTotal');
+        window.location.reload();
+      }
+    });
+  };
 
   async function connectWallet() {
     if (window.ethereum) {
       try {
-        // Request account access via MetaMask
         await window.ethereum.request({ method: "eth_requestAccounts" });
         const tempProvider = new ethers.providers.Web3Provider(window.ethereum);
         setProvider(tempProvider);
@@ -91,20 +115,33 @@ function App() {
         const address = await signer.getAddress();
         setWalletAddress(address);
 
-        // Instantiate the contract using the signer
+        let ensName = "";
+        try {
+          ensName = await tempProvider.lookupAddress(address);
+        } catch (lookupError) {
+          console.warn("ENS lookup failed:", lookupError);
+        }
+        setDisplayName(ensName && ensName.length > 0 ? ensName : address);
+
         const tempContract = new ethers.Contract(contractAddress, contractABI, signer);
         setContract(tempContract);
 
-        // Fetch and set the contract owner address
-        const ownerAddress = await tempContract.owner();
-        setContractOwner(ownerAddress);
+        // Get the contract's owner and check if current wallet is owner
+        const owner = await tempContract.owner();
+        setOwnerAddress(owner);
+        const ownerCheck = await tempContract.isOwner(address);
+        setIsOwner(ownerCheck);
 
-        // Fetch and set the contract balance ("shared money")
-        fetchContractBalance(tempProvider, tempContract);
+        const allowed = await tempContract.isAllowed();
+        setAccessAllowed(allowed);
 
-        // Log a sample BigNumber to verify ethers is working
-        const sampleValue = ethers.BigNumber.from("1000");
-        console.log("Sample BigNumber Value:", sampleValue.toString());
+        const accBal = await tempProvider.getBalance(address);
+        setAccountBalance(ethers.utils.formatEther(accBal));
+
+        const contBal = await tempProvider.getBalance(tempContract.address);
+        setContractBalance(ethers.utils.formatEther(contBal));
+
+        setLoading(false);
       } catch (err) {
         console.error("Error connecting wallet:", err);
       }
@@ -113,208 +150,154 @@ function App() {
     }
   }
 
-  async function fetchContractBalance(providerInstance, contractInstance) {
-    if (providerInstance && contractInstance) {
-      try {
-        const bal = await providerInstance.getBalance(contractInstance.address);
-        setContractBalance(ethers.utils.formatEther(bal));
-      } catch (error) {
-        console.error("Error fetching contract balance:", error);
-      }
-    }
-  }
+  // Remove automatic wallet connection so that the login page remains until user clicks the connect button.
+  // useEffect(() => { connectWallet(); }, []); // Commented out
 
-  async function depositFunds() {
-    if (!contract) return;
-    try {
-      const tx = await contract.deposit({
-        value: ethers.utils.parseEther(depositAmount)
-      });
-      await tx.wait();
-      alert("Deposit successful!");
-      // Refresh the contract balance
-      fetchContractBalance(provider, contract);
-    } catch (error) {
-      console.error("Deposit error:", error);
-      alert("Deposit failed!");
-    }
-  }
-
-  async function transferFunds() {
-    if (!contract) return;
-    try {
-      const tx = await contract.transferFunds(
-        transferTo,
-        ethers.utils.parseEther(transferAmount),
-        { value: 0 }
-      );
-      await tx.wait();
-      alert("Transfer successful!");
-      // Refresh the contract balance after transfer
-      fetchContractBalance(provider, contract);
-    } catch (error) {
-      console.error("Transfer error:", error);
-      alert("Transfer failed!");
-    }
-  }
-
-  async function assignVoterFunc() {
-    if (!contract) return;
-    try {
-      const tx = await contract.assignVoter(voterAddress);
-      await tx.wait();
-      alert("Voter assigned successfully!");
-    } catch (error) {
-      console.error("Assign voter error:", error);
-      alert("Assigning voter failed!");
-    }
-  }
-
-  async function voteNewOwner() {
-    if (!contract) return;
-    try {
-      const tx = await contract.voteForNewOwner(newOwnerAddress);
-      await tx.wait();
-      alert("Vote cast successfully!");
-    } catch (error) {
-      console.error("Vote error:", error);
-      alert("Voting failed!");
-    }
-  }
-
-  async function setLimitFunc() {
-    if (!contract) return;
-    try {
-      const tx = await contract.setLimit(
-        setLimitAddress,
-        ethers.BigNumber.from(limitAmount)
-      );
-      await tx.wait();
-      alert("Limit set successfully!");
-    } catch (error) {
-      console.error("Set limit error:", error);
-      alert("Setting limit failed!");
-    }
-  }
-
+  // Refresh contract balance every 8 seconds
   useEffect(() => {
-    // Optionally refresh the contract balance periodically
-    async function refreshContractBalance() {
+    async function fetchContractBalance() {
       if (provider && contract) {
-        const bal = await provider.getBalance(contract.address);
-        setContractBalance(ethers.utils.formatEther(bal));
+        try {
+          const bal = await provider.getBalance(contract.address);
+          setContractBalance(ethers.utils.formatEther(bal));
+        } catch (err) {
+          console.error("Error fetching contract balance:", err);
+        }
       }
     }
-    refreshContractBalance();
-  }, [provider, contract]);
+    if (!loading) {
+      fetchContractBalance();
+      const interval = setInterval(fetchContractBalance, 2000);
+      return () => clearInterval(interval);
+    }
+  }, [provider, contract, loading]);
 
   return (
-    <div className="App">
-      <motion.h1 initial={{ opacity: 0, y: -50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
-        Smart Wallet
-      </motion.h1>
-      
-      {walletAddress ? (
-        <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3, duration: 0.6 }}>
-          Connecte User: {walletAddress}
-        </motion.p>
-      ) : (
-        <motion.button
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          onClick={connectWallet}
-        >
-          Connect Wallet
-        </motion.button>
-      )}
+    <Router>
+      <div className="app-wrapper">
+        <AnimatePresence>
+          {loading ? (
+            <motion.div
+              key="login"
+              className="login-container"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0, transition: { duration: 1 } }}
+            >
+              <motion.h1
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 1.5, ease: "easeInOut" }}
+              >
+                Welcome to Wallet Share
+              </motion.h1>
+              <motion.img 
+                src="/login-page-new.gif" 
+                alt="Wallet Animation" 
+                style={{ width: "200px", height: "200px", margin: "20px 0" }}
+                initial={{ opacity: 0, y: -30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.9, duration: 1, ease: "easeInOut" }}
+              />
+              <motion.button
+                className="connect-btn"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={connectWallet}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 1, duration: 1.5, ease: "easeInOut" }}
+              >
+                Connect Wallet
+              </motion.button>
+            </motion.div>
+          ) : !accessAllowed ? (
+            <motion.div
+              key="denied"
+              className="login-container"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0, transition: { duration: 1 } }}
+            >
+              <h1>Access Denied</h1>
+              <p>Your account ({walletAddress}) is not authorized to access this wallet.</p>
+            </motion.div>
+          ) : (
+            <motion.div
+              key="main"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0, transition: { duration: 1 } }}
+            >
+              <NavBar 
+                onLogout={handleLogout}
+                walletDisplayName={displayName || walletAddress}
+                accountBalance={accountBalance}
+                showDropdown={showDropdown}
+                setShowDropdown={setShowDropdown}
+                walletAddress={walletAddress}
+                ownerAddress={ownerAddress}
+                isOwner={isOwner}
+              />
+              <Routes>
+                <Route path="/" element={<Home walletAddress={displayName || walletAddress} contractBalance={contractBalance} />} />
+                <Route path="/deposit" element={<Deposit contract={contract} walletAddress={walletAddress} />} />
+                <Route path="/transfer" element={<Transfer contract={contract} contractBalance={contractBalance} />} />
+                {isOwner ? (
+                  <Route path="/assign-voter" element={<AssignVoter contract={contract} />} />
+                ) : null}
+                <Route path="/vote-new-owner" element={<VoteNewOwner contract={contract} ownerAddress={ownerAddress} />} />
+                {isOwner ? (
+                  <Route path="/set-limit" element={<SetLimit contract={contract} />} />
+                ) : null}
+                { isOwner ? (
+                  <Route path="/admin" element={<Admin contract={contract} />} />
+                ) : (
+                  <Route path="/members" element={<Members contract={contract} />} />
+                )}
+                <Route path="*" element={<Navigate to="/" />} />
+              </Routes>
+            </motion.div>
+          )}
+        </AnimatePresence>
+        {alertData && (
+          <CustomAlert alertData={alertData} onClose={() => setAlertData(null)} />
+        )}
+      </div>
+    </Router>
+  );
+}
 
-      <motion.h2 initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4, duration: 0.6 }}>
-        Wallet Balance: {contractBalance} ETH
-      </motion.h2>
-
-      {contractOwner && (
-        <motion.h3 initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.45, duration: 0.6 }}>
-          Wallet Owner: {contractOwner}
-        </motion.h3>
-      )}
-
-      <motion.div className="section" initial={{ opacity: 0, x: -100 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.6 }}>
-        <h3>Deposit Funds</h3>
-        <input
-          type="text"
-          placeholder="Amount in ETH"
-          value={depositAmount}
-          onChange={(e) => setDepositAmount(e.target.value)}
-        />
-        <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={depositFunds}>
-          Deposit
-        </motion.button>
-      </motion.div>
-
-      <motion.div className="section" initial={{ opacity: 0, x: 100 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.6 }}>
-        <h3>Transfer Funds</h3>
-        <input
-          type="text"
-          placeholder="Recipient Address"
-          value={transferTo}
-          onChange={(e) => setTransferTo(e.target.value)}
-        />
-        <input
-          type="text"
-          placeholder="Amount in ETH"
-          value={transferAmount}
-          onChange={(e) => setTransferAmount(e.target.value)}
-        />
-        <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={transferFunds}>
-          Transfer
-        </motion.button>
-      </motion.div>
-
-      <motion.div className="section" initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.6 }}>
-        <h3>Assign Voter (Owner Only)</h3>
-        <input
-          type="text"
-          placeholder="Voter Address"
-          value={voterAddress}
-          onChange={(e) => setVoterAddress(e.target.value)}
-        />
-        <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={assignVoterFunc}>
-          Assign Voter
-        </motion.button>
-      </motion.div>
-
-      <motion.div className="section" initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.6 }}>
-        <h3>Vote for New Owner</h3>
-        <input
-          type="text"
-          placeholder="New Owner Address"
-          value={newOwnerAddress}
-          onChange={(e) => setNewOwnerAddress(e.target.value)}
-        />
-        <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={voteNewOwner}>
-          Vote
-        </motion.button>
-      </motion.div>
-
-      <motion.div className="section" initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.6 }}>
-        <h3>Set Transfer Limit (Owner Only)</h3>
-        <input
-          type="text"
-          placeholder="Address"
-          value={setLimitAddress}
-          onChange={(e) => setSetLimitAddress(e.target.value)}
-        />
-        <input
-          type="number"
-          placeholder="Limit Amount"
-          value={limitAmount}
-          onChange={(e) => setLimitAmount(e.target.value)}
-        />
-        <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={setLimitFunc}>
-          Set Limit
-        </motion.button>
-      </motion.div>
-    </div>
+function NavBar({ isOwner, onLogout, walletDisplayName, accountBalance, showDropdown, setShowDropdown, walletAddress, ownerAddress }) {
+  return (
+    <nav className="navbar">
+      <div className="nav-left">
+        <NavLink className="nav-logo-link" to="/">
+          <img src="/new-logo.png" alt="My Logo" className="nav-logo-img" />
+          <span className="nav-logo-text">Wallet Share</span>
+        </NavLink>
+      </div>
+      <div className="nav-items">
+        <NavLink to="/" className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}> Home</NavLink>
+        <NavLink to="/deposit" className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}> Deposit</NavLink>
+        <NavLink to="/transfer" className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}> Transfer</NavLink>
+        {isOwner && (
+          <NavLink to="/assign-voter" className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}> Assign Voter </NavLink>
+        )}
+        <NavLink to="/vote-new-owner" className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}> New Owner</NavLink>
+        {isOwner && (
+          <NavLink to="/set-limit" className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}> Set Limit </NavLink>
+        )}
+        { isOwner ? (
+          <NavLink to="/admin" className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}> Admin</NavLink>
+        ) : (
+          <NavLink to="/members" className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}> Members</NavLink>
+        )}
+      </div>
+      <div className="nav-right">
+        <button className="logout-btn" onClick={onLogout}>Logout</button>
+      </div>
+    </nav>
   );
 }
 

@@ -1,0 +1,23 @@
+/* src/components/Home.css */
+.home-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    width: 100%;
+    padding: 40px 20px;
+    min-height: calc(100vh - 80px); /* Adjust if you have a fixed navbar */
+  }
+  
+  .typewriter {
+    font-size: 2.5rem;
+    color: #f1f3f4;
+    margin-bottom: 20px;
+  }
+  
+  .welcome-msg {
+    font-size: 1.2rem;
+    line-height: 1.6;
+    color: #fff9f9;
+  }

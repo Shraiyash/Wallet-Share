@@ -1,43 +1,288 @@
-.App {
-  text-align: center;
-  font-family: 'Roboto', sans-serif;
-  padding: 20px;
-  background: #f0f4f8;
-  min-height: 100vh;
-}
+/* Global Styles */
 
-h1, h2, h3 {
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Montserrat:wght@400;700&display=swap');
+
+
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-image: url('/public/background-6.avif');
+  background-size: cover;           /* Make sure the image covers the entire background */
+  background-position: center;      /* Center the image */
+  background-repeat: no-repeat;     /* Do not tile the image */
+  overflow-x: hidden;
   color: #333;
 }
 
-.section {
-  background: #fff;
-  border-radius: 10px;
-  box-shadow: 0px 5px 15px rgba(0,0,0,0.1);
-  padding: 20px;
-  margin: 20px auto;
-  max-width: 500px;
+h1, h2, h3 {
+  font-family: 'Montserrat', sans-serif;
+  color: #fff;
 }
 
+html, body #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+/* Centered Login Page */
+.login-container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: #fff;
+}
+
+/* Connect Wallet Button */
+.connect-btn {
+  padding: 12px 24px;
+  font-size: 1.2rem;
+  margin-top: 20px;
+  background-color: #0070f3;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+/* NavBar styling: Background extends to the full width */
+.navbar {
+  width: 100%;
+  /* background-color: #0070f3; */
+  padding: 10px 20px;
+  display: flex;
+  justify-content: center;
+  position: relative;
+  z-index: 10;
+}
+
+.nav-items {
+  display: flex;
+  gap: 15px;
+}
+
+.nav-item {
+  color: #fff;
+  text-decoration: none;
+  padding: 6px 12px;
+  /* border: 1px solid #005bb5; */
+  border-radius: 4px;
+  transition: background-color 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 1.2rem;
+}
+
+.nav-item:hover {
+  background-color: #005bb5;
+}
+
+.nav-item.active {
+  background-color: #642dbd;;
+  border-radius: 20px;
+}
+
+/* User Dropdown in Top Right */
+.user-dropdown {
+  position: relative;
+  top: 10px;
+  right: 40px;
+  z-index: 20;
+  font-family: 'Montserrat', sans-serif;
+  background-color: transparent;
+}
+
+.user-btn {
+  background-color: #0070f3;
+  color: #fff;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+/* Updated dropdown content: white background, black text */
+.dropdown-content {
+  position: absolute;
+  top: 40px;
+  right: 0;
+  background-color: #fff;
+  color: #000;
+  border: 1px solid #ccc;
+  padding: 10px;
+  border-radius: 4px;
+  min-width: 150px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+  font-family: 'Montserrat', sans-serif;
+}
+
+.nav-right {
+  background-color: transparent;
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-100%);
+}
+
+/* Main Container for All Pages */
+.main-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+  min-height: 100vh;
+  padding: 40px 20px;
+}
+
+.app-wrapper {
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+/* Home Page Styles */
+.home-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  width: 100%;
+  padding: 40px 20px;
+  min-height: calc(100vh - 80px);
+}
+
+.home-container h2 {
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+  color: #fdfeff;
+}
+
+.home-container p {
+  font-size: 1.2rem;
+  line-height: 1.6;
+}
+
+.typewriter {
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+  color: #f4f6f7;
+}
+
+.contract-balance {
+  font-size: 1.8rem;
+  color: #ffffff;
+  margin-top: 20px;
+}
+
+/* Section Styles for Feature Pages */
+.section {
+  background: #fff;
+  padding: 20px;
+  margin: 20px auto;
+  border-radius: 8px;
+  max-width: 500px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+/* Form Inputs and Buttons */
 input {
   padding: 10px;
   margin: 10px 0;
   width: 80%;
-  border: 1px solid #ccc;
-  border-radius: 5px;
+  border: 1px solid #fafafa;
+  border-radius: 4px;
+  color: white;
 }
 
-button {
+/* button {
   padding: 10px 20px;
   margin: 10px 0;
   border: none;
-  border-radius: 5px;
-  background: #0070f3;
+  border-radius: 4px;
+  background-color: #0070f3;
   color: #fff;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 1rem;
+} */
+
+/* button:hover {
+  background-color: #005bb5;
+} */
+
+/* Glass Styles */
+/* glass-styles.css */
+.glass-container {
+  width: 100%;
+  max-width: 400px;              /* Container won't exceed 400px */
+  margin: 0 auto;                /* Center horizontally */
+  padding: 20px;
+  border-radius: 12px;
+
+  /* Glassmorphism effect: semi-transparent background + blur */
+  background: rgba(255, 255, 255, 0.1); 
+  backdrop-filter: blur(10px);  
+
+  /* For older Safari support, you may also need: 
+     -webkit-backdrop-filter: blur(10px);
+  */
+
+  /* Optional: some box shadow for depth */
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-button:hover {
-  background: #005bb5;
+.glass-input {
+  width: 100%;
+  margin: 8px 0;
+  padding: 12px;
+  border: none;
+  outline: none;
+  border-radius: 8px;
+
+  /* Slight translucent background for the input */
+  background: rgba(255, 255, 255, 0.2); 
+  color: #fff;                    /* White text for contrast on dark or glass background */
+
+  /* Optional transitions for focus/hover states */
+  transition: background 0.3s;
+}
+
+.glass-input::placeholder {
+  color: #ccc;                    /* Placeholder text color */
+}
+
+.glass-input:focus {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.glass-button {
+  margin-top: 16px;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  background-color: #d0dce8; 
+  color: #c3a9a9;
+  cursor: pointer;
+  font-size: 1rem;
+
+  transition: background 0.3s;
+}
+
+.glass-button:hover {
+  background-color: #4189d2;   /* Darken on hover */
 }
