@@ -44,11 +44,18 @@ Wallet Share is a decentralized smart wallet application that offers a role-base
 - **Deposit & Transfer Screens:**  
   - **Deposit:**  
     Users deposit funds, with every deposit recorded on-chain. The deposit screen features a split view where the left side shows the title and on-chain deposit total, while the right side displays an animated GIF and input fields.
+
+<img width="1490" alt="Screenshot 2025-02-25 at 6 11 05 PM" src="https://github.com/user-attachments/assets/ec608ddd-f025-4eaf-8546-3799e374213f" />
+
   - **Transfer:**  
     The transfer screen provides an engaging UI with a smoothly oscillating image, dynamic balance updates, and easy-to-use transfer functionality.
 
+<img width="1488" alt="Screenshot 2025-02-25 at 6 11 22 PM" src="https://github.com/user-attachments/assets/73278788-5c36-48c1-84c7-fd280cb39bb2" />
+
 - **Custom Alerts & Smooth Animations:**  
   Instead of default browser dialogs, custom modal alerts provide clear, branded notifications. Framer Motion delivers smooth, continuous animations across the app.
+
+<img width="1485" alt="Screenshot 2025-02-25 at 6 12 05 PM" src="https://github.com/user-attachments/assets/8ce603c9-4844-4302-a42d-ff8e5b8c7bca" />
 
 ## License
 
