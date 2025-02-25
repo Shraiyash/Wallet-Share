@@ -2,6 +2,8 @@
 
 Wallet Share is a decentralized smart wallet application that offers a role-based experience and on-chain governance. It enables secure fund management, personalized deposit tracking, and controlled access via smart contract features. The interface is built with React and ethers.js, enhanced by smooth Framer Motion animations and custom modal alerts.
 
+<img width="1491" alt="Screenshot 2025-02-25 at 6 08 34 PM" src="https://github.com/user-attachments/assets/75fd601a-c8bf-4058-bd38-2ce45224ca74" />
+
 ## Owner vs. Member Experience
 
 - **Owner (Admin) Experience:**
@@ -9,9 +11,13 @@ Wallet Share is a decentralized smart wallet application that offers a role-base
   - **Governance:** Owners can manage authorized voters and initiate multi-party voting to transfer wallet ownership.
   - **Exclusive Navigation:** The navigation bar adapts to show "Set Limit" and "Admin" tabs only when the connected account is recognized as the owner.
 
+<img width="1489" alt="Screenshot 2025-02-25 at 6 08 52 PM" src="https://github.com/user-attachments/assets/207faf0e-f534-4498-9a4c-69b7d523c457" />
+
 - **Member Experience:**
   - **Simplified Interface:** Non-owner users see a streamlined "Members" page with essential functions like depositing funds and transferring money, along with their personal on-chain deposit totals.
   - **Controlled Access:** Members operate under predefined limits and only access features approved by the owner.
+ 
+<img width="1484" alt="Screenshot 2025-02-25 at 6 09 09 PM" src="https://github.com/user-attachments/assets/3a5bc03c-a519-48c0-8f31-6963b89d7db1" />
 
 ## Key Features
 
