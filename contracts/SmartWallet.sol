@@ -73,7 +73,6 @@ contract SmarContracttWallet {
     function voteForNewOwner(address payable _newOwner) public {
         require(authorizedVoters[msg.sender], "You are not authorized for this action");
 
-        // this makes sure the same voter doesn't vote twice for the specific newOwner
         require(hasVoterAlrVoted[_newOwner][msg.sender] == false, "You have already voted");
 
         if(nextOwner != _newOwner){

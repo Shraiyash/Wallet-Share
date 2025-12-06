@@ -54,7 +54,7 @@ function SetLimit({ contract }) {
       />
       <input className='glass-input'
         type="number" 
-        placeholder="Limit Amount" 
+        placeholder="Limit Amount in Wei" 
         value={limitAmount} 
         onChange={(e) => setLimitAmount(e.target.value)} 
       />
