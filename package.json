@@ -1,9 +1,21 @@
 {
-  "dependencies": {
-    "18": "^0.0.0",
-    "ethers": "^5.7.2"
+  "name": "smart-wallet",
+  "version": "1.0.0",
+  "description": "Wallet Share - a shared smart wallet dApp with access control, spending limits, and social-recovery voting",
+  "scripts": {
+    "compile": "hardhat compile",
+    "test": "hardhat test",
+    "test:gas": "REPORT_GAS=true hardhat test",
+    "coverage": "hardhat coverage",
+    "node": "hardhat node",
+    "deploy:local": "hardhat run scripts/deploy.ts --network localhost",
+    "deploy:ganache": "hardhat run scripts/deploy.ts --network ganache",
+    "deploy:sepolia": "hardhat run scripts/deploy.ts --network sepolia"
   },
   "devDependencies": {
-    "tailwindcss": "^4.0.7"
+    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "dotenv": "^17.4.2",
+    "hardhat": "^2.22.17",
+    "typescript": "^5.7.3"
   }
 }

@@ -1,0 +1,8 @@
+{
+  "contract": "SmarContracttWallet",
+  "network": "sepolia",
+  "chainId": 11155111,
+  "address": "0xBF556BB08A9e9599DbCa6FAAf4da4B92Dc63Cd0E",
+  "deployer": "0x2C25ab000Bc453547923cBbB678EaCF3812B9158",
+  "deployedAt": "2026-07-29T05:24:01.736Z"
+}

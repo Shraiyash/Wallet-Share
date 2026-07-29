@@ -131,7 +131,10 @@ html, body #root {
   position: absolute;
   right: 20px;
   top: 50%;
-  transform: translateY(-100%);
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
 /* Main Container for All Pages */
