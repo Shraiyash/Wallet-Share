@@ -21,8 +21,15 @@ import { useWalletState } from "./hooks/useWalletState";
 import "./App.css";
 
 function App() {
-  const { isConnected, isAllowed, isOwner, address, ownerAddress, contractBalance } =
-    useWalletState();
+  const {
+    isConnected,
+    accessStatus,
+    refetchAccess,
+    isOwner,
+    address,
+    ownerAddress,
+    contractBalance,
+  } = useWalletState();
 
   return (
     <Router>
@@ -59,7 +66,34 @@ function App() {
                 <ConnectButton label="Connect Wallet" />
               </motion.div>
             </motion.div>
-          ) : !isAllowed ? (
+          ) : accessStatus === "loading" ? (
+            <motion.div
+              key="checking"
+              className="login-container"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0, transition: { duration: 1 } }}
+            >
+              <h1>Checking access…</h1>
+            </motion.div>
+          ) : accessStatus === "error" ? (
+            <motion.div
+              key="access-error"
+              className="login-container"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0, transition: { duration: 1 } }}
+            >
+              <h1>Couldn't verify access</h1>
+              <p>
+                We couldn't reach the network to check this account. This is a
+                connection problem, not a permissions one.
+              </p>
+              <div style={{ marginTop: 20 }}>
+                <button onClick={() => refetchAccess()}>Try again</button>
+              </div>
+            </motion.div>
+          ) : accessStatus === "denied" ? (
             <motion.div
               key="denied"
               className="login-container"

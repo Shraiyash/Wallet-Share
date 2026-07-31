@@ -2,6 +2,9 @@ import { useAccount, useBalance, useReadContract, useWatchContractEvent } from "
 import { formatEther } from "viem";
 import { walletContract, contractAddress } from "../config/contract";
 
+/** Whether the connected account may use the wallet, or why we can't say yet. */
+export type AccessStatus = "loading" | "error" | "allowed" | "denied";
+
 /**
  * Central hook for the connected user's relationship to the wallet contract.
  *
@@ -30,7 +33,12 @@ export function useWalletState() {
 
   // isAllowed() reads msg.sender, so the call must originate from the
   // connected account.
-  const { data: isAllowed } = useReadContract({
+  const {
+    data: isAllowed,
+    isPending: isAllowedPending,
+    isError: isAllowedError,
+    refetch: refetchAccess,
+  } = useReadContract({
     ...walletContract,
     functionName: "isAllowed",
     account: address,
@@ -49,12 +57,27 @@ export function useWalletState() {
     onLogs: () => refetchBalance(),
   });
 
+  // A read that is still in flight or that failed both surface as
+  // `data === undefined`. Collapsing those into a boolean makes every
+  // transient RPC error look like a denial and locks out even the owner, so
+  // keep the three outcomes distinct and let the UI handle each one.
+  const accessStatus: AccessStatus = !address
+    ? "loading"
+    : isAllowedError
+      ? "error"
+      : isAllowedPending
+        ? "loading"
+        : isAllowed
+          ? "allowed"
+          : "denied";
+
   return {
     address,
     isConnected,
     ownerAddress: ownerAddress as `0x${string}` | undefined,
     isOwner: Boolean(isOwner),
-    isAllowed: Boolean(isAllowed),
+    accessStatus,
+    refetchAccess,
     contractBalance: balance ? formatEther(balance.value) : "0",
     refetchBalance,
   };
