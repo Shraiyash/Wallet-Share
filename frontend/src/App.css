@@ -170,8 +170,10 @@ html, body #root {
 .signin-btn--google:hover:not(:disabled) {
   background-color: #fff;
   /* The border does the "selected" work now, so the white halo that stood in
-     for it can go — it only muddied the edge against a grey outline. */
-  border-color: #9aa0a6;
+     for it can go — it only muddied the edge against a grey outline. Darkening
+     all the way to the button's own text colour is what makes it read as
+     picked rather than merely hovered. */
+  border-color: #1f1f1f;
   box-shadow: 0 10px 26px rgba(0, 0, 0, 0.35);
 }
 
