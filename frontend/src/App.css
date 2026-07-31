@@ -136,7 +136,7 @@ html, body #root {
 
 .signin-btn:hover:not(:disabled),
 .signin-btn--google:hover:not(:disabled) {
-  background-color: #f1f3f4;
+  background-color: #e3e6ea;
 }
 
 .signin-btn--apple:hover:not(:disabled) {
