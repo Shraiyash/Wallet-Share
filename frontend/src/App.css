@@ -100,6 +100,12 @@ html, body #root {
   border: 1px solid transparent;
 }
 
+.signin-secondary {
+  color: rgba(255, 255, 255, 0.9);
+  background-color: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
 /* Google and Apple keep their own house styles — a visitor recognises those
    buttons on sight, and restyling them in our blue reads as less trustworthy. */
 .signin-btn--google {
@@ -113,32 +119,37 @@ html, body #root {
   border-color: rgba(255, 255, 255, 0.28);
 }
 
-.signin-btn--apple:hover:not(:disabled) {
-  background-color: #141414;
-}
-
 .signin-btn--primary {
   color: #fff;
   background-color: #141b2d;
+}
+
+/* Hover: lift + soften a shadow underneath, and let each variant shift within
+   its own palette. Every variant must set a background here — index.css has a
+   bare `button:hover` that paints an unrelated purple over anything that
+   doesn't, which looks especially bad on the white Google button. */
+.signin-btn:hover:not(:disabled),
+.signin-secondary:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.28);
+}
+
+.signin-btn:hover:not(:disabled),
+.signin-btn--google:hover:not(:disabled) {
+  background-color: #f1f3f4;
+}
+
+.signin-btn--apple:hover:not(:disabled) {
+  background-color: #1a1a1a;
 }
 
 .signin-btn--primary:hover:not(:disabled) {
   background-color: #1d2540;
 }
 
-.signin-btn:hover:not(:disabled),
 .signin-secondary:hover:not(:disabled) {
-  transform: translateY(-1px);
-}
-
-.signin-secondary {
-  color: rgba(255, 255, 255, 0.9);
-  background-color: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.25);
-}
-
-.signin-secondary:hover:not(:disabled) {
-  background-color: rgba(255, 255, 255, 0.14);
+  background-color: rgba(255, 255, 255, 0.16);
+  border-color: rgba(255, 255, 255, 0.38);
 }
 
 .signin-btn:disabled,
