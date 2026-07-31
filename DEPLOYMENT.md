@@ -107,7 +107,8 @@ Alchemy dashboard → your app → **Security** → add your deployed origin (e.
 `https://smart-wallet-wheat.vercel.app`) under allowed domains/referrers. Once a
 domain allowlist exists, requests from anywhere else are rejected.
 
-Add `http://localhost:5173` too, or local dev will start failing.
+Add `http://localhost:3000` too (the port `vite.config.ts` pins for dev), or
+local dev will fail every read with a 503.
 
 ---
 
