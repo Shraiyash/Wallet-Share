@@ -27,12 +27,25 @@ function resolveChain(): Chain {
 const activeChain = resolveChain();
 const chains: readonly [Chain, ...Chain[]] = [activeChain];
 
+// Required by RainbowKit / WalletConnect. Injected wallets (MetaMask) work
+// without a valid id, but the QR / mobile-wallet flow needs a real one from
+// https://cloud.walletconnect.com (VITE_WALLETCONNECT_PROJECT_ID).
+// An unset var in a dashboard often arrives as "" rather than undefined, so
+// trim and treat blank as missing — otherwise it reaches WalletConnect as an
+// invalid id and surfaces only as an opaque 403 in the console.
+const walletConnectProjectId =
+  import.meta.env.VITE_WALLETCONNECT_PROJECT_ID?.trim() || "";
+
+if (!walletConnectProjectId) {
+  console.warn(
+    "[Wallet Share] VITE_WALLETCONNECT_PROJECT_ID is not set — WalletConnect " +
+      "and mobile wallets are unavailable. Injected wallets (MetaMask) still work.",
+  );
+}
+
 export const wagmiConfig = getDefaultConfig({
   appName: "Wallet Share",
-  // Required by RainbowKit / WalletConnect. Injected wallets (MetaMask) work
-  // without a valid id, but a live public URL should set a real one from
-  // https://cloud.walletconnect.com (VITE_WALLETCONNECT_PROJECT_ID).
-  projectId: import.meta.env.VITE_WALLETCONNECT_PROJECT_ID ?? "PLACEHOLDER",
+  projectId: walletConnectProjectId || "PLACEHOLDER",
   chains,
   // Route contract reads through the env RPC (your Alchemy/Infura endpoint on
   // Sepolia, or Ganache locally). Falls back to the chain's default transport.
