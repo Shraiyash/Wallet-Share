@@ -113,6 +113,9 @@ html, body #root {
   overflow: hidden;
   color: #1f1f1f;
   background-color: #fff;
+  /* Google's own outline. Without a visible edge this button had nothing to
+     react with on hover, which is why it felt inert next to the others. */
+  border-color: #dadce0;
 }
 
 /* The translucent buttons get their hover feel from the page's purple gradient
@@ -166,8 +169,10 @@ html, body #root {
 .signin-btn:hover:not(:disabled),
 .signin-btn--google:hover:not(:disabled) {
   background-color: #fff;
-  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.35),
-    0 0 0 3px rgba(255, 255, 255, 0.28);
+  /* The border does the "selected" work now, so the white halo that stood in
+     for it can go — it only muddied the edge against a grey outline. */
+  border-color: #9aa0a6;
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.35);
 }
 
 .signin-btn--apple:hover:not(:disabled) {
