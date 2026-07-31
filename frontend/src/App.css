@@ -87,11 +87,11 @@ html, body #root {
   font-family: 'Montserrat', sans-serif;
   font-size: 1rem;
   font-weight: 600;
-  letter-spacing: 0.01em;
+  letter-spacing: -0.01em;
   border-radius: 999px;
   cursor: pointer;
-  transition: transform 0.15s ease, background-color 0.15s ease,
-    border-color 0.15s ease, box-shadow 0.2s ease;
+  transition: transform 0.22s ease, background-color 0.22s ease,
+    border-color 0.22s ease, box-shadow 0.22s ease;
 }
 
 .signin-btn {
@@ -103,49 +103,20 @@ html, body #root {
 .signin-secondary {
   color: rgba(255, 255, 255, 0.9);
   background-color: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.14);
 }
 
 /* Google and Apple keep their own house styles — a visitor recognises those
-   buttons on sight, and restyling them in our blue reads as less trustworthy. */
+   buttons on sight. Solid fills, no outlines: the hover is a fill change and
+   nothing else, which is what keeps this feeling calm rather than busy. */
 .signin-btn--google {
-  position: relative;
-  overflow: hidden;
-  color: #1f1f1f;
+  color: #1d1d1f;
   background-color: #fff;
-  /* Google's own outline. Without a visible edge this button had nothing to
-     react with on hover, which is why it felt inert next to the others. */
-  border-color: #dadce0;
-}
-
-/* The translucent buttons get their hover feel from the page's purple gradient
-   shifting through them. An opaque white button can't do that, so it gets a
-   real gradient layered on top — faded in, so it reads as a state change
-   rather than a repaint. */
-.signin-btn--google::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0) 0%,
-    rgba(20, 27, 45, 0.1) 45%,
-    rgba(20, 27, 45, 0.22) 100%
-  );
-  opacity: 0;
-  transition: opacity 0.2s ease;
-  pointer-events: none;
-}
-
-.signin-btn--google:hover:not(:disabled)::after {
-  opacity: 1;
 }
 
 .signin-btn--apple {
   color: #fff;
-  background-color: #000;
-  border-color: rgba(255, 255, 255, 0.28);
+  background-color: #1d1d1f;
 }
 
 .signin-btn--primary {
@@ -153,32 +124,22 @@ html, body #root {
   background-color: #141b2d;
 }
 
-/* Hover: lift + soften a shadow underneath, and let each variant shift within
-   its own palette. Every variant must set a background here — index.css has a
-   bare `button:hover` that paints an unrelated purple over anything that
-   doesn't, which looks especially bad on the white Google button. */
+/* Hover is a fill shift plus a whisper of elevation. Every variant must set a
+   background here — index.css has a bare `button:hover` that paints an
+   unrelated purple over anything that doesn't. */
 .signin-btn:hover:not(:disabled),
 .signin-secondary:hover:not(:disabled) {
   transform: translateY(-1px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.28);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
 }
 
-/* The white button is the odd one out: every other variant brightens on hover,
-   so greying this one read as "disabled" rather than "clickable". Keep it white
-   and add a halo instead, so it lifts toward the viewer like the rest. */
 .signin-btn:hover:not(:disabled),
 .signin-btn--google:hover:not(:disabled) {
-  background-color: #fff;
-  /* The border does the "selected" work now, so the white halo that stood in
-     for it can go — it only muddied the edge against a grey outline. Darkening
-     all the way to the button's own text colour is what makes it read as
-     picked rather than merely hovered. */
-  border-color: #1f1f1f;
-  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.35);
+  background-color: #e8e8ed;
 }
 
 .signin-btn--apple:hover:not(:disabled) {
-  background-color: #1a1a1a;
+  background-color: #2d2d2f;
 }
 
 .signin-btn--primary:hover:not(:disabled) {
@@ -187,7 +148,7 @@ html, body #root {
 
 .signin-secondary:hover:not(:disabled) {
   background-color: rgba(255, 255, 255, 0.16);
-  border-color: rgba(255, 255, 255, 0.38);
+  border-color: rgba(255, 255, 255, 0.24);
 }
 
 .signin-btn:disabled,
