@@ -145,30 +145,20 @@ function Landing() {
         Welcome to Wallet Share
       </motion.h1>
 
-      <motion.p
-        className="hero-sub"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.5, duration: 1.2, ease: "easeInOut" }}
-      >
-        A shared wallet for people you trust. Pool funds together, set spending
-        limits for each member, and vote on who's in charge.
-      </motion.p>
-
       <motion.img
         src="/login-page-new.gif"
         alt="Wallet Animation"
         style={{ width: "180px", height: "180px", margin: "12px 0" }}
         initial={{ opacity: 0, y: -30 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.9, duration: 1, ease: "easeInOut" }}
+        transition={{ delay: 0.5, duration: 1, ease: "easeInOut" }}
       />
 
       <motion.div
         className="signin-panel"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 1, duration: 1.5, ease: "easeInOut" }}
+        transition={{ delay: 0.7, duration: 1.2, ease: "easeInOut" }}
       >
         <button
           className="signin-btn signin-btn--google"
@@ -209,11 +199,6 @@ function Landing() {
           <FaWallet className="signin-icon" aria-hidden="true" />
           Connect an existing wallet
         </button>
-
-        <p className="signin-note">
-          New to this? Signing in creates a secure wallet for you — there's no
-          seed phrase to write down.
-        </p>
       </motion.div>
     </motion.div>
   );

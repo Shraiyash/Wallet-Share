@@ -1,6 +1,6 @@
 /* Global Styles */
 
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Montserrat:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Montserrat:wght@400;500;600;700&display=swap');
 
 
 body {
@@ -69,7 +69,7 @@ html, body #root {
 .signin-panel {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
   width: min(22rem, calc(100vw - 40px));
   margin-top: 8px;
 }
@@ -81,11 +81,14 @@ html, body #root {
   justify-content: center;
   gap: 10px;
   width: 100%;
-  padding: 12px 18px;
-  font-family: inherit;
+  padding: 16px 24px;
+  /* Montserrat, not the inherited Segoe UI — this is the face the rest of the
+     app is set in, and the mismatch was what made this page feel bolted on. */
+  font-family: 'Montserrat', sans-serif;
   font-size: 1rem;
   font-weight: 600;
-  border-radius: 10px;
+  letter-spacing: 0.01em;
+  border-radius: 999px;
   cursor: pointer;
   transition: transform 0.15s ease, background-color 0.15s ease,
     border-color 0.15s ease;
@@ -116,16 +119,16 @@ html, body #root {
 
 .signin-btn--primary {
   color: #fff;
-  background-color: #0070f3;
+  background-color: #141b2d;
+}
+
+.signin-btn--primary:hover:not(:disabled) {
+  background-color: #1d2540;
 }
 
 .signin-btn:hover:not(:disabled),
 .signin-secondary:hover:not(:disabled) {
   transform: translateY(-1px);
-}
-
-.signin-btn--primary:hover:not(:disabled) {
-  background-color: #0060d6;
 }
 
 .signin-secondary {
@@ -166,13 +169,6 @@ html, body #root {
   background-color: rgba(255, 255, 255, 0.2);
 }
 
-.signin-note {
-  margin: 4px 0 0;
-  font-size: 0.85rem;
-  line-height: 1.45;
-  color: rgba(255, 255, 255, 0.6);
-}
-
 /* ---- Request-access screen ---- */
 
 .address-card {
@@ -185,7 +181,7 @@ html, body #root {
   padding: 16px;
   background-color: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 12px;
+  border-radius: 16px;
 }
 
 .address-code {
