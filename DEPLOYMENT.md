@@ -98,6 +98,17 @@ If you set the vars via the dashboard after the first deploy, run
 `npx vercel --prod` once more so the build picks them up (Vite bakes env at
 build time).
 
+### Lock the RPC URL to your domain
+`VITE_RPC_URL` is baked into the JS bundle, so anyone can read your Alchemy key
+out of the deployed site and spend your request quota. The key can't be hidden —
+restrict where it works instead:
+
+Alchemy dashboard → your app → **Security** → add your deployed origin (e.g.
+`https://smart-wallet-wheat.vercel.app`) under allowed domains/referrers. Once a
+domain allowlist exists, requests from anywhere else are rejected.
+
+Add `http://localhost:5173` too, or local dev will start failing.
+
 ---
 
 ## Switching back to local Ganache
