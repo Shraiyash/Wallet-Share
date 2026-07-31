@@ -53,6 +53,149 @@ html, body #root {
   cursor: pointer;
 }
 
+/* ---- Landing page sign-in ------------------------------------------------
+   A visitor here may have never used a wallet, so the social logins are the
+   primary path and "connect an existing wallet" is deliberately secondary. */
+
+.hero-sub {
+  max-width: 30rem;
+  margin: 8px auto 0;
+  padding: 0 20px;
+  font-size: 1.05rem;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.signin-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: min(22rem, calc(100vw - 40px));
+  margin-top: 8px;
+}
+
+.signin-btn,
+.signin-secondary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 12px 18px;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: transform 0.15s ease, background-color 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.signin-btn {
+  color: #12181f;
+  background-color: #fff;
+  border: 1px solid transparent;
+}
+
+/* Google and Apple keep their own house styles — a visitor recognises those
+   buttons on sight, and restyling them in our blue reads as less trustworthy. */
+.signin-btn--google {
+  color: #1f1f1f;
+  background-color: #fff;
+}
+
+.signin-btn--apple {
+  color: #fff;
+  background-color: #000;
+  border-color: rgba(255, 255, 255, 0.28);
+}
+
+.signin-btn--apple:hover:not(:disabled) {
+  background-color: #141414;
+}
+
+.signin-btn--primary {
+  color: #fff;
+  background-color: #0070f3;
+}
+
+.signin-btn:hover:not(:disabled),
+.signin-secondary:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.signin-btn--primary:hover:not(:disabled) {
+  background-color: #0060d6;
+}
+
+.signin-secondary {
+  color: rgba(255, 255, 255, 0.9);
+  background-color: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.signin-secondary:hover:not(:disabled) {
+  background-color: rgba(255, 255, 255, 0.14);
+}
+
+.signin-btn:disabled,
+.signin-secondary:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.signin-icon {
+  font-size: 1.15rem;
+  flex-shrink: 0;
+}
+
+.signin-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.85rem;
+}
+
+.signin-divider::before,
+.signin-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.signin-note {
+  margin: 4px 0 0;
+  font-size: 0.85rem;
+  line-height: 1.45;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* ---- Request-access screen ---- */
+
+.address-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  width: min(26rem, calc(100vw - 40px));
+  margin-top: 20px;
+  padding: 16px;
+  background-color: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+}
+
+.address-code {
+  width: 100%;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.82rem;
+  color: #fff;
+  overflow-wrap: anywhere;
+}
+
 /* NavBar styling: Background extends to the full width */
 .navbar {
   width: 100%;

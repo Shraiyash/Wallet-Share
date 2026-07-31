@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   BrowserRouter as Router,
   Routes,
@@ -6,7 +7,11 @@ import {
   NavLink,
 } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { ConnectButton } from "@rainbow-me/rainbowkit";
+import { AppKitButton, useAppKit } from "@reown/appkit/react";
+import { useAppKitWallet } from "@reown/appkit-wallet-button/react";
+import { FcGoogle } from "react-icons/fc";
+import { FaApple, FaWallet } from "react-icons/fa";
+import { MdMailOutline } from "react-icons/md";
 
 import Home from "./components/Home";
 import Deposit from "./components/Deposit";
@@ -36,36 +41,7 @@ function App() {
       <div className="app-wrapper">
         <AnimatePresence>
           {!isConnected ? (
-            <motion.div
-              key="login"
-              className="login-container"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0, transition: { duration: 1 } }}
-            >
-              <motion.h1
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 1.5, ease: "easeInOut" }}
-              >
-                Welcome to Wallet Share
-              </motion.h1>
-              <motion.img
-                src="/login-page-new.gif"
-                alt="Wallet Animation"
-                style={{ width: "200px", height: "200px", margin: "20px 0" }}
-                initial={{ opacity: 0, y: -30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.9, duration: 1, ease: "easeInOut" }}
-              />
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 1, duration: 1.5, ease: "easeInOut" }}
-              >
-                <ConnectButton label="Connect Wallet" />
-              </motion.div>
-            </motion.div>
+            <Landing key="login" />
           ) : accessStatus === "loading" ? (
             <motion.div
               key="checking"
@@ -85,28 +61,25 @@ function App() {
               exit={{ opacity: 0, transition: { duration: 1 } }}
             >
               <h1>Couldn't verify access</h1>
-              <p>
+              <p className="hero-sub">
                 We couldn't reach the network to check this account. This is a
                 connection problem, not a permissions one.
               </p>
-              <div style={{ marginTop: 20 }}>
-                <button onClick={() => refetchAccess()}>Try again</button>
+              <div className="signin-panel">
+                <button
+                  className="signin-btn signin-btn--primary"
+                  onClick={() => refetchAccess()}
+                >
+                  Try again
+                </button>
               </div>
             </motion.div>
           ) : accessStatus === "denied" ? (
-            <motion.div
+            <RequestAccess
               key="denied"
-              className="login-container"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0, transition: { duration: 1 } }}
-            >
-              <h1>Access Denied</h1>
-              <p>Your account ({address}) is not authorized to access this wallet.</p>
-              <div style={{ marginTop: 20 }}>
-                <ConnectButton />
-              </div>
-            </motion.div>
+              address={address}
+              onRecheck={() => refetchAccess()}
+            />
           ) : (
             <motion.div
               key="main"
@@ -145,6 +118,166 @@ function App() {
   );
 }
 
+/**
+ * Landing page for someone who may never have used a crypto wallet.
+ *
+ * The social buttons are real one-click logins, not shortcuts into a wallet
+ * picker: AppKit mints an embedded wallet behind the Google/Apple/email
+ * account, so a visitor with no wallet and no seed phrase can still get in.
+ * Existing crypto users get the full wallet list via the secondary link.
+ */
+function Landing() {
+  const { open } = useAppKit();
+  const { connect, isPending } = useAppKitWallet();
+
+  return (
+    <motion.div
+      className="login-container"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0, transition: { duration: 1 } }}
+    >
+      <motion.h1
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1.5, ease: "easeInOut" }}
+      >
+        Welcome to Wallet Share
+      </motion.h1>
+
+      <motion.p
+        className="hero-sub"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.5, duration: 1.2, ease: "easeInOut" }}
+      >
+        A shared wallet for people you trust. Pool funds together, set spending
+        limits for each member, and vote on who's in charge.
+      </motion.p>
+
+      <motion.img
+        src="/login-page-new.gif"
+        alt="Wallet Animation"
+        style={{ width: "180px", height: "180px", margin: "12px 0" }}
+        initial={{ opacity: 0, y: -30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.9, duration: 1, ease: "easeInOut" }}
+      />
+
+      <motion.div
+        className="signin-panel"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1, duration: 1.5, ease: "easeInOut" }}
+      >
+        <button
+          className="signin-btn signin-btn--google"
+          onClick={() => connect("google")}
+          disabled={isPending}
+        >
+          <FcGoogle className="signin-icon" aria-hidden="true" />
+          Continue with Google
+        </button>
+
+        <button
+          className="signin-btn signin-btn--apple"
+          onClick={() => connect("apple")}
+          disabled={isPending}
+        >
+          <FaApple className="signin-icon" aria-hidden="true" />
+          Continue with Apple
+        </button>
+
+        <button
+          className="signin-btn signin-btn--primary"
+          onClick={() => connect("email")}
+          disabled={isPending}
+        >
+          <MdMailOutline className="signin-icon" aria-hidden="true" />
+          Continue with email
+        </button>
+
+        <div className="signin-divider">
+          <span>or</span>
+        </div>
+
+        <button
+          className="signin-secondary"
+          onClick={() => open({ view: "Connect" })}
+          disabled={isPending}
+        >
+          <FaWallet className="signin-icon" aria-hidden="true" />
+          Connect an existing wallet
+        </button>
+
+        <p className="signin-note">
+          New to this? Signing in creates a secure wallet for you — there's no
+          seed phrase to write down.
+        </p>
+      </motion.div>
+    </motion.div>
+  );
+}
+
+type RequestAccessProps = {
+  address?: `0x${string}`;
+  onRecheck: () => void;
+};
+
+/**
+ * Shown once someone is signed in but not on the contract's allow list.
+ *
+ * Signing in is easy now, so this is where most new visitors will land. It has
+ * to explain the situation and hand them their address to share, rather than
+ * reading as a flat rejection with nothing to do next.
+ */
+function RequestAccess({ address, onRecheck }: RequestAccessProps) {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = async () => {
+    if (!address) return;
+    try {
+      await navigator.clipboard.writeText(address);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      setCopied(false);
+    }
+  };
+
+  return (
+    <motion.div
+      className="login-container"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0, transition: { duration: 1 } }}
+    >
+      <h1>You're in — almost</h1>
+      <p className="hero-sub">
+        Wallet Share is invite-only. Send the address below to whoever owns the
+        wallet and ask them to add you as a member.
+      </p>
+
+      <div className="address-card">
+        <code className="address-code">{address}</code>
+        <button className="signin-secondary" onClick={handleCopy}>
+          {copied ? "Copied" : "Copy address"}
+        </button>
+      </div>
+
+      <div className="signin-panel">
+        <button className="signin-btn signin-btn--primary" onClick={onRecheck}>
+          I've been added — check again
+        </button>
+        <div className="signin-divider">
+          <span>or</span>
+        </div>
+        <AppKitButton balance="hide" />
+      </div>
+    </motion.div>
+  );
+}
+
 type NavBarProps = {
   isOwner: boolean;
 };
@@ -179,10 +312,10 @@ function NavBar({ isOwner }: NavBarProps) {
         )}
       </div>
       <div className="nav-right">
-        {/* showBalance={false}: the chip shows your personal account balance,
-            which is confusingly different from the contract's "Wallet Balance"
-            on the dashboard. Hide it so the only ETH figure is the wallet's. */}
-        <ConnectButton showBalance={false} accountStatus="avatar" chainStatus="icon" />
+        {/* balance="hide": the chip shows your personal account balance, which
+            is confusingly different from the contract's "Wallet Balance" on the
+            dashboard. Hide it so the only ETH figure is the wallet's. */}
+        <AppKitButton balance="hide" />
       </div>
     </nav>
   );
