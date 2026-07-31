@@ -134,9 +134,14 @@ html, body #root {
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.28);
 }
 
+/* The white button is the odd one out: every other variant brightens on hover,
+   so greying this one read as "disabled" rather than "clickable". Keep it white
+   and add a halo instead, so it lifts toward the viewer like the rest. */
 .signin-btn:hover:not(:disabled),
 .signin-btn--google:hover:not(:disabled) {
-  background-color: #e3e6ea;
+  background-color: #fff;
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.35),
+    0 0 0 3px rgba(255, 255, 255, 0.28);
 }
 
 .signin-btn--apple:hover:not(:disabled) {
