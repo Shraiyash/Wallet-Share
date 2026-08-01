@@ -40,11 +40,16 @@ createAppKit({
     emailShowWallets: true,
     analytics: true,
   },
-  // Match the existing dark, blue-accented look of the app.
+  // Match the app's dark, violet-accented look.
   themeMode: "dark",
   themeVariables: {
-    "--w3m-accent": "#0070f3",
+    // Violet, not the old blue: the account chip sits in the same strip as the
+    // nav, so it should carry the same accent the selected pill does.
+    "--w3m-accent": "#642dbd",
+    "--w3m-color-mix": "#642dbd",
+    "--w3m-color-mix-strength": 8,
     "--w3m-font-family": "'Montserrat', 'Segoe UI', sans-serif",
+    "--w3m-border-radius-master": "3px",
   },
 });
 
