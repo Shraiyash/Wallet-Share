@@ -24,3 +24,6 @@ frontend/dist/
 .DS_Store
 *.log
 npm-debug.log*
+
+# Claude Code machine-local settings (the shared command lives in .claude/commands/)
+.claude/settings.local.json
