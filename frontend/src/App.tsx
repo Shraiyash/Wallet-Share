@@ -313,36 +313,70 @@ function NavBar({ isOwner, onSwitchWallet }: NavBarProps) {
     return stored === "classic" ? "classic" : "refined";
   });
 
+  const [hovered, setHovered] = useState<string | null>(null);
+
   const toggleTheme = () => {
     const next = navTheme === "refined" ? "classic" : "refined";
     setNavTheme(next);
     localStorage.setItem("walletshare.navTheme", next);
   };
 
+  const refined = navTheme === "refined";
+
+  const links = [
+    { to: "/", label: "Home" },
+    { to: "/deposit", label: "Deposit" },
+    { to: "/transfer", label: "Transfer" },
+    ...(isOwner ? [{ to: "/assign-voter", label: "Assign Voter" }] : []),
+    { to: "/vote-new-owner", label: "New Owner" },
+    ...(isOwner ? [{ to: "/set-limit", label: "Set Limit" }] : []),
+    isOwner ? { to: "/admin", label: "Admin" } : { to: "/members", label: "Members" },
+  ];
+
+  // Snappy but settled — an Apple control arrives quickly and doesn't wobble.
+  const slide = { type: "spring", stiffness: 420, damping: 34, mass: 0.7 } as const;
+
   return (
-    <nav className={navTheme === "refined" ? "navbar navbar--refined" : "navbar"}>
+    <nav className={refined ? "navbar navbar--refined" : "navbar"}>
       <div className="nav-left">
         <NavLink className="nav-logo-link" to="/">
           <img src="/new-logo.png" alt="My Logo" className="nav-logo-img" />
           <span className="nav-logo-text">Wallet Share</span>
         </NavLink>
       </div>
-      <div className="nav-items">
-        <NavLink to="/" className={linkClass}> Home</NavLink>
-        <NavLink to="/deposit" className={linkClass}> Deposit</NavLink>
-        <NavLink to="/transfer" className={linkClass}> Transfer</NavLink>
-        {isOwner && (
-          <NavLink to="/assign-voter" className={linkClass}> Assign Voter </NavLink>
-        )}
-        <NavLink to="/vote-new-owner" className={linkClass}> New Owner</NavLink>
-        {isOwner && (
-          <NavLink to="/set-limit" className={linkClass}> Set Limit </NavLink>
-        )}
-        {isOwner ? (
-          <NavLink to="/admin" className={linkClass}> Admin</NavLink>
-        ) : (
-          <NavLink to="/members" className={linkClass}> Members</NavLink>
-        )}
+      <div className="nav-items" onMouseLeave={() => setHovered(null)}>
+        {links.map((link) => (
+          <NavLink
+            key={link.to}
+            to={link.to}
+            className={linkClass}
+            onMouseEnter={() => setHovered(link.to)}
+          >
+            {({ isActive }) => (
+              <>
+                {/* Two shared layoutIds, so the highlights physically travel
+                    between items instead of fading out and in. The selected
+                    pill and the hover pill move independently — hovering
+                    elsewhere never makes you lose sight of where you are. */}
+                {refined && isActive && (
+                  <motion.span
+                    layoutId="nav-selected"
+                    className="nav-pill nav-pill--selected"
+                    transition={slide}
+                  />
+                )}
+                {refined && hovered === link.to && !isActive && (
+                  <motion.span
+                    layoutId="nav-hovered"
+                    className="nav-pill nav-pill--hovered"
+                    transition={slide}
+                  />
+                )}
+                <span className="nav-label">{link.label}</span>
+              </>
+            )}
+          </NavLink>
+        ))}
       </div>
       <div className="nav-right">
         <button
@@ -350,7 +384,7 @@ function NavBar({ isOwner, onSwitchWallet }: NavBarProps) {
           onClick={toggleTheme}
           title="Switch between the original nav bar and the refined one"
         >
-          {navTheme === "refined" ? "Classic look" : "Refined look"}
+          {refined ? "Classic look" : "Refined look"}
         </button>
         <button className="nav-switch" onClick={onSwitchWallet}>
           Switch wallet
