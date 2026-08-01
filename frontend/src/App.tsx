@@ -306,22 +306,7 @@ function NavBar({ isOwner, onSwitchWallet }: NavBarProps) {
   const linkClass = ({ isActive }: { isActive: boolean }) =>
     isActive ? "nav-item active" : "nav-item";
 
-  // Remembered across sessions so a preference sticks; "classic" restores the
-  // original hand-tuned bar exactly, since the refined rules are pure overrides.
-  const [navTheme, setNavTheme] = useState<"refined" | "classic">(() => {
-    const stored = localStorage.getItem("walletshare.navTheme");
-    return stored === "classic" ? "classic" : "refined";
-  });
-
   const [hovered, setHovered] = useState<string | null>(null);
-
-  const toggleTheme = () => {
-    const next = navTheme === "refined" ? "classic" : "refined";
-    setNavTheme(next);
-    localStorage.setItem("walletshare.navTheme", next);
-  };
-
-  const refined = navTheme === "refined";
 
   const links = [
     { to: "/", label: "Home" },
@@ -337,7 +322,7 @@ function NavBar({ isOwner, onSwitchWallet }: NavBarProps) {
   const slide = { type: "spring", stiffness: 420, damping: 34, mass: 0.7 } as const;
 
   return (
-    <nav className={refined ? "navbar navbar--refined" : "navbar"}>
+    <nav className="navbar navbar--refined">
       <div className="nav-left">
         <NavLink className="nav-logo-link" to="/">
           <img src="/new-logo.png" alt="My Logo" className="nav-logo-img" />
@@ -358,14 +343,14 @@ function NavBar({ isOwner, onSwitchWallet }: NavBarProps) {
                     between items instead of fading out and in. The selected
                     pill and the hover pill move independently — hovering
                     elsewhere never makes you lose sight of where you are. */}
-                {refined && isActive && (
+                {isActive && (
                   <motion.span
                     layoutId="nav-selected"
                     className="nav-pill nav-pill--selected"
                     transition={slide}
                   />
                 )}
-                {refined && hovered === link.to && !isActive && (
+                {hovered === link.to && !isActive && (
                   <motion.span
                     layoutId="nav-hovered"
                     className="nav-pill nav-pill--hovered"
@@ -379,13 +364,6 @@ function NavBar({ isOwner, onSwitchWallet }: NavBarProps) {
         ))}
       </div>
       <div className="nav-right">
-        <button
-          className="nav-theme-toggle"
-          onClick={toggleTheme}
-          title="Switch between the original nav bar and the refined one"
-        >
-          {refined ? "Classic look" : "Refined look"}
-        </button>
         <button className="nav-switch" onClick={onSwitchWallet}>
           Switch wallet
         </button>

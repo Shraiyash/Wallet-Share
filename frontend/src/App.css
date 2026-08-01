@@ -676,25 +676,6 @@ a.signin-btn {
   letter-spacing: -0.01em;
 }
 
-/* Small control to flip between the two looks. */
-.nav-theme-toggle {
-  padding: 7px 12px;
-  font-family: 'Montserrat', sans-serif;
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: -0.01em;
-  color: rgba(255, 255, 255, 0.75);
-  background-color: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 999px;
-  cursor: pointer;
-  transition: background-color 0.22s ease, color 0.22s ease;
-}
-
-.nav-theme-toggle:hover {
-  color: #fff;
-  background-color: rgba(255, 255, 255, 0.14);
-}
 
 /* ---- Refined top bar: one continuous strip ------------------------------
    The classic bar positions the logo and the right-hand controls absolutely,
@@ -754,7 +735,6 @@ a.signin-btn {
 
 /* Both right-hand buttons take the nav track's material, so the strip reads
    as one system from the logo across to the account chip. */
-.navbar--refined .nav-theme-toggle,
 .navbar--refined .nav-switch {
   padding: 9px 16px;
   font-family: 'Montserrat', sans-serif;
@@ -773,8 +753,53 @@ a.signin-btn {
 }
 
 /* Same violet lift the nav items use on hover. */
-.navbar--refined .nav-theme-toggle:hover,
 .navbar--refined .nav-switch:hover {
   background-color: rgba(139, 92, 246, 0.22);
   color: #fff;
+}
+
+/* ---- One horizontal axis -------------------------------------------------
+   Centring alone wasn't enough: the nav track was ~53px tall against ~39px
+   right-hand pills, and two different-sized objects on a shared centreline
+   still read as misaligned. Everything on the strip is now pinned to the same
+   explicit height, so the top and bottom edges line up across the whole bar. */
+
+.navbar--refined {
+  /* AppKit's account chip is locked to 32px inside its shadow DOM and cannot
+     be stretched from out here, so the rest of the strip comes down to meet
+     it. At 38px the 3px above and below the chip is imperceptible, where the
+     old 44px left a visible step. */
+  --bar-height: 38px;
+}
+
+.navbar--refined .nav-logo-link,
+.navbar--refined .nav-items,
+.navbar--refined .nav-switch {
+  height: var(--bar-height);
+}
+
+.navbar--refined .nav-items {
+  align-items: center;
+}
+
+/* Vertical padding is gone: height plus centring does the work, so the pill
+   can't drift when a label wraps differently. */
+.navbar--refined .nav-item {
+  height: calc(var(--bar-height) - 10px);
+  padding: 0 16px;
+  align-items: center;
+}
+
+.navbar--refined .nav-switch {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 18px;
+}
+
+/* The account chip is a web component, so it only takes outer sizing. */
+.navbar--refined .nav-right appkit-button,
+.navbar--refined .nav-right w3m-button {
+  display: inline-flex;
+  align-items: center;
+  height: var(--bar-height);
 }
