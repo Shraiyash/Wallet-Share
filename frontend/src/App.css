@@ -588,36 +588,42 @@ a.signin-btn {
    control the way a macOS toolbar or an iOS segmented picker does. */
 
 .navbar--refined {
-  padding: 14px 20px;
+  padding: 18px 20px;
 }
 
 .navbar--refined .nav-items {
-  gap: 4px;
-  padding: 5px;
-  background-color: rgba(255, 255, 255, 0.07);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  gap: 2px;
+  padding: 4px;
+  background-color: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 999px;
   /* The frosted panel is the single most Apple-identifying detail here. */
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.22);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  /* Inner top highlight + outer shadow: what makes glass look lit rather
+     than merely translucent. */
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.09),
+    0 6px 24px rgba(0, 0, 0, 0.28);
 }
 
 .navbar--refined .nav-item {
   font-family: 'Montserrat', sans-serif;
   /* 1.2rem shouted a bit; Apple navigation sits quieter than its content. */
-  font-size: 0.95rem;
+  font-size: 0.88rem;
   font-weight: 500;
   letter-spacing: -0.01em;
-  padding: 8px 16px;
+  padding: 7px 15px;
   border-radius: 999px;
   color: rgba(255, 255, 255, 0.72);
   transition: background-color 0.22s ease, color 0.22s ease;
 }
 
+/* The inherited #005bb5 was the one colour in here that belonged to no part
+   of this app. Hover is now a translucent lift of the violet the active pill
+   already uses, so hovering previews selection instead of introducing a
+   second hue — the way an Apple segmented control behaves. */
 .navbar--refined .nav-item:hover {
-  /* Same blue, softened so it reads as a layer over glass rather than paint. */
-  background-color: rgba(0, 91, 181, 0.6);
+  background-color: rgba(139, 92, 246, 0.22);
   color: #fff;
 }
 
@@ -625,7 +631,8 @@ a.signin-btn {
   background-color: #642dbd;
   color: #fff;
   border-radius: 999px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.28);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    0 2px 8px rgba(60, 20, 120, 0.5);
 }
 
 .navbar--refined .nav-item.active:hover {
