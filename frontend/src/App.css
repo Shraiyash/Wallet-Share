@@ -794,6 +794,10 @@ a.signin-btn {
   display: inline-flex;
   align-items: center;
   padding: 0 18px;
+  /* index.css sets `button { margin-top: 10px }` globally, which pushed this
+     down relative to the account chip beside it — the chip is a web component,
+     not a <button>, so it never picked the margin up. */
+  margin: 0;
 }
 
 /* The account chip is a web component, so it only takes outer sizing. */
