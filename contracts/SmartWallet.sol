@@ -1,6 +1,13 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.19;
 
+import {EIP712} from "@openzeppelin/contracts/utils/cryptography/EIP712.sol";
+import {SignatureChecker} from "@openzeppelin/contracts/utils/cryptography/SignatureChecker.sol";
+
+interface IWalletShareFactory {
+    function recordMembership(address member, bool allowed) external;
+}
+
 /*
 A simplified Smart Wallet:
 1. Only one owner.
@@ -25,9 +32,16 @@ contract ExampleTransferFund {
     receive() external payable { }
 }
 
-contract SmarContracttWallet {
+contract SmarContracttWallet is EIP712 {
 
     address payable public owner;
+
+    /// Human label so a member can tell "Rent House" from "Ski Trip".
+    string public name;
+
+    /// Set when deployed through the factory; address(0) for a standalone
+    /// deployment. Used to keep the "which wallets am I in?" index current.
+    IWalletShareFactory public immutable factory;
 
     mapping(address => uint) public limits;
     mapping(address => bool) public AbletoSend;
@@ -48,8 +62,53 @@ contract SmarContracttWallet {
     uint constant votesNeeded = 3;
     mapping(address => mapping(address => bool)) hasVoterAlrVoted;
 
-    constructor() {
-        owner = payable(msg.sender);
+    /// Owner is passed in rather than taken from msg.sender: when the factory
+    /// deploys this, msg.sender is the factory, and it must not own the wallet.
+    constructor(address payable _owner, string memory _name, address _factory)
+        EIP712("WalletShare", "1")
+    {
+        require(_owner != address(0), "Owner required");
+        owner = _owner;
+        name = _name;
+        factory = IWalletShareFactory(_factory);
+    }
+
+    /// Invites are bearer tokens: the owner signs one off-chain (free, no
+    /// transaction) and sends the link to anyone. Deliberately not bound to an
+    /// invitee address — that would mean collecting addresses before inviting,
+    /// which is the friction we're removing. Single-use and expiring instead.
+    bytes32 private constant INVITE_TYPEHASH =
+        keccak256("Invite(address wallet,bytes32 inviteId,uint256 expiry)");
+
+    mapping(bytes32 => bool) public inviteUsed;
+
+    event InviteAccepted(address indexed member, bytes32 indexed inviteId);
+
+    function inviteDigest(bytes32 inviteId, uint256 expiry) public view returns (bytes32) {
+        return _hashTypedDataV4(
+            keccak256(abi.encode(INVITE_TYPEHASH, address(this), inviteId, expiry))
+        );
+    }
+
+    function acceptInvite(bytes32 inviteId, uint256 expiry, bytes calldata signature) external {
+        require(block.timestamp <= expiry, "Invite expired");
+        require(!inviteUsed[inviteId], "Invite already used");
+        // SignatureChecker, not ecrecover: an owner signing in with Google gets
+        // a smart account, whose signatures are ERC-1271 rather than ECDSA.
+        require(
+            SignatureChecker.isValidSignatureNow(owner, inviteDigest(inviteId, expiry), signature),
+            "Invalid invite"
+        );
+
+        inviteUsed[inviteId] = true;
+        _grantAccess(msg.sender, true);
+        emit InviteAccepted(msg.sender, inviteId);
+    }
+
+    /// Lets the owner kill an outstanding link before anyone redeems it.
+    function revokeInvite(bytes32 inviteId) external {
+        require(msg.sender == owner, "Only owner can revoke");
+        inviteUsed[inviteId] = true;
     }
 
     address[] public listofVoters;
@@ -173,6 +232,10 @@ contract SmarContracttWallet {
     // Set access restrictions; only the owner can do this.
     function setAccess(address user, bool _allowed) public {
         require(msg.sender == owner, "Only owner can set access");
+        _grantAccess(user, _allowed);
+    }
+
+    function _grantAccess(address user, bool _allowed) internal {
         allowed[user] = _allowed;
         emit AccessSet(user, _allowed);
 
@@ -188,6 +251,12 @@ contract SmarContracttWallet {
             if (!alreadyExists) {
                 allowedUsers.push(user);
             }
+        }
+
+        // Keep the factory's membership index in step. Wrapped so a failure
+        // here can never block someone joining their own wallet.
+        if (address(factory) != address(0)) {
+            try factory.recordMembership(user, _allowed) {} catch {}
         }
     }
 

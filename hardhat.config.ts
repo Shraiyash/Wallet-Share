@@ -8,8 +8,13 @@ const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY ?? "";
 
 const config: HardhatUserConfig = {
   solidity: {
-    version: "0.8.19",
+    // 0.8.24+ is required by OpenZeppelin v5, which SmartWallet uses for
+    // EIP-712 and ERC-1271-aware signature checks on invites.
+    version: "0.8.24",
     settings: {
+      // OpenZeppelin v5 emits `mcopy`, which only exists from Cancun onwards.
+      // Sepolia and mainnet have both been on Cancun since Dencun.
+      evmVersion: "cancun",
       optimizer: {
         enabled: true,
         runs: 200,

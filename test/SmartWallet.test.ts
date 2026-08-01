@@ -12,7 +12,12 @@ describe("SmarContracttWallet", () => {
       await ethers.getSigners();
 
     const Wallet = await ethers.getContractFactory("SmarContracttWallet");
-    const wallet = (await Wallet.deploy()) as unknown as SmarContracttWallet;
+    // Standalone deployment: owner passed explicitly, no factory to notify.
+    const wallet = (await Wallet.deploy(
+      owner.address,
+      "Test Wallet",
+      ethers.ZeroAddress,
+    )) as unknown as SmarContracttWallet;
     await wallet.waitForDeployment();
 
     return { wallet, owner, memberA, memberB, voter1, voter2, voter3, recipient };
