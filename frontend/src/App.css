@@ -577,3 +577,81 @@ a.signin-btn {
 .nav-switch:hover {
   background-color: rgba(255, 255, 255, 0.16);
 }
+
+/* ---- Refined nav -------------------------------------------------------
+   Layered on top of the classic rules above, never replacing them, so the
+   toggle can drop straight back to the original.
+
+   The colours are deliberately unchanged: #005bb5 on hover and the #642dbd
+   active pill are the part that was tuned by hand. What changes is the
+   material around them — the row becomes a floating, frosted segmented
+   control the way a macOS toolbar or an iOS segmented picker does. */
+
+.navbar--refined {
+  padding: 14px 20px;
+}
+
+.navbar--refined .nav-items {
+  gap: 4px;
+  padding: 5px;
+  background-color: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+  /* The frosted panel is the single most Apple-identifying detail here. */
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.22);
+}
+
+.navbar--refined .nav-item {
+  font-family: 'Montserrat', sans-serif;
+  /* 1.2rem shouted a bit; Apple navigation sits quieter than its content. */
+  font-size: 0.95rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  padding: 8px 16px;
+  border-radius: 999px;
+  color: rgba(255, 255, 255, 0.72);
+  transition: background-color 0.22s ease, color 0.22s ease;
+}
+
+.navbar--refined .nav-item:hover {
+  /* Same blue, softened so it reads as a layer over glass rather than paint. */
+  background-color: rgba(0, 91, 181, 0.6);
+  color: #fff;
+}
+
+.navbar--refined .nav-item.active {
+  background-color: #642dbd;
+  color: #fff;
+  border-radius: 999px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.28);
+}
+
+.navbar--refined .nav-item.active:hover {
+  background-color: #642dbd;
+}
+
+.navbar--refined .nav-logo-text {
+  letter-spacing: -0.01em;
+}
+
+/* Small control to flip between the two looks. */
+.nav-theme-toggle {
+  padding: 7px 12px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: rgba(255, 255, 255, 0.75);
+  background-color: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background-color 0.22s ease, color 0.22s ease;
+}
+
+.nav-theme-toggle:hover {
+  color: #fff;
+  background-color: rgba(255, 255, 255, 0.14);
+}
