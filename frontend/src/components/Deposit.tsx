@@ -3,10 +3,11 @@ import { motion } from "framer-motion";
 import { parseEther, formatEther, BaseError } from "viem";
 import { useAccount, useReadContract, useWriteContract, usePublicClient } from "wagmi";
 import CustomAlert from "./CustomAlert";
-import { walletContract } from "../config/contract";
+import { useWalletContract } from "../context/ActiveWallet";
 import type { AlertData } from "../types";
 
 function Deposit() {
+  const walletContract = useWalletContract();
   const [depositAmount, setDepositAmount] = useState("");
   const [alertData, setAlertData] = useState<AlertData | null>(null);
   const [hasDeposited, setHasDeposited] = useState(false);

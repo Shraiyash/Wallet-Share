@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence, useAnimation } from "framer-motion";
 import { useReadContract } from "wagmi";
-import { walletContract } from "../config/contract";
+import { useWalletContract } from "../context/ActiveWallet";
 
 function Members() {
+  const walletContract = useWalletContract();
   const [showAccessList, setShowAccessList] = useState(false);
   const imageControls = useAnimation();
 

@@ -5,6 +5,8 @@ import {
   Route,
   Navigate,
   NavLink,
+  useLocation,
+  useNavigate,
 } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { AppKitButton, useAppKit } from "@reown/appkit/react";
@@ -21,11 +23,24 @@ import VoteNewOwner from "./components/VoteNewOwner";
 import SetLimit from "./components/SetLimit";
 import Admin from "./components/Admin";
 import Members from "./components/Members";
+import WalletPicker from "./components/WalletPicker";
+import JoinInvite from "./components/JoinInvite";
 import { useWalletState } from "./hooks/useWalletState";
+import { ActiveWalletProvider, useActiveWallet } from "./context/ActiveWallet";
 
 import "./App.css";
 
 function App() {
+  return (
+    <Router>
+      <ActiveWalletProvider>
+        <Shell />
+      </ActiveWalletProvider>
+    </Router>
+  );
+}
+
+function Shell() {
   const {
     isConnected,
     accessStatus,
@@ -35,13 +50,28 @@ function App() {
     ownerAddress,
     contractBalance,
   } = useWalletState();
+  const { activeWallet, setActiveWallet } = useActiveWallet();
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  // An invite link has to work before sign-in and before a wallet is picked,
+  // so it is checked ahead of everything else.
+  if (location.pathname === "/join") {
+    return (
+      <div className="app-wrapper">
+        <JoinInvite onDone={() => navigate("/")} />
+      </div>
+    );
+  }
 
   return (
-    <Router>
+    <>
       <div className="app-wrapper">
         <AnimatePresence>
           {!isConnected ? (
             <Landing key="login" />
+          ) : !activeWallet ? (
+            <WalletPicker key="picker" />
           ) : accessStatus === "loading" ? (
             <motion.div
               key="checking"
@@ -79,6 +109,7 @@ function App() {
               key="denied"
               address={address}
               onRecheck={() => refetchAccess()}
+              onBack={() => setActiveWallet(null)}
             />
           ) : (
             <motion.div
@@ -87,7 +118,7 @@ function App() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0, transition: { duration: 1 } }}
             >
-              <NavBar isOwner={isOwner} />
+              <NavBar isOwner={isOwner} onSwitchWallet={() => setActiveWallet(null)} />
               <Routes>
                 <Route
                   path="/"
@@ -114,7 +145,7 @@ function App() {
           )}
         </AnimatePresence>
       </div>
-    </Router>
+    </>
   );
 }
 
@@ -207,6 +238,7 @@ function Landing() {
 type RequestAccessProps = {
   address?: `0x${string}`;
   onRecheck: () => void;
+  onBack: () => void;
 };
 
 /**
@@ -216,7 +248,7 @@ type RequestAccessProps = {
  * to explain the situation and hand them their address to share, rather than
  * reading as a flat rejection with nothing to do next.
  */
-function RequestAccess({ address, onRecheck }: RequestAccessProps) {
+function RequestAccess({ address, onRecheck, onBack }: RequestAccessProps) {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = async () => {
@@ -257,7 +289,9 @@ function RequestAccess({ address, onRecheck }: RequestAccessProps) {
         <div className="signin-divider">
           <span>or</span>
         </div>
-        <AppKitButton balance="hide" />
+        <button className="signin-secondary" onClick={onBack}>
+          Back to my wallets
+        </button>
       </div>
     </motion.div>
   );
@@ -265,9 +299,10 @@ function RequestAccess({ address, onRecheck }: RequestAccessProps) {
 
 type NavBarProps = {
   isOwner: boolean;
+  onSwitchWallet: () => void;
 };
 
-function NavBar({ isOwner }: NavBarProps) {
+function NavBar({ isOwner, onSwitchWallet }: NavBarProps) {
   const linkClass = ({ isActive }: { isActive: boolean }) =>
     isActive ? "nav-item active" : "nav-item";
 
@@ -297,6 +332,9 @@ function NavBar({ isOwner }: NavBarProps) {
         )}
       </div>
       <div className="nav-right">
+        <button className="nav-switch" onClick={onSwitchWallet}>
+          Switch wallet
+        </button>
         {/* balance="hide": the chip shows your personal account balance, which
             is confusingly different from the contract's "Wallet Balance" on the
             dashboard. Hide it so the only ETH figure is the wallet's. */}

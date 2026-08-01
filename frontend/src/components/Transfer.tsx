@@ -3,7 +3,7 @@ import { motion, useAnimation } from "framer-motion";
 import { parseEther, isAddress, BaseError } from "viem";
 import { useWriteContract, usePublicClient } from "wagmi";
 import CustomAlert from "./CustomAlert";
-import { walletContract } from "../config/contract";
+import { useWalletContract } from "../context/ActiveWallet";
 import type { AlertData } from "../types";
 
 type Props = {
@@ -11,6 +11,7 @@ type Props = {
 };
 
 function Transfer({ contractBalance }: Props) {
+  const walletContract = useWalletContract();
   const [transferTo, setTransferTo] = useState("");
   const [transferAmount, setTransferAmount] = useState("");
   const [alertData, setAlertData] = useState<AlertData | null>(null);

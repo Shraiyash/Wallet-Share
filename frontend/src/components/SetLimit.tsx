@@ -3,10 +3,11 @@ import { motion } from "framer-motion";
 import { parseEther, isAddress, BaseError } from "viem";
 import { useWriteContract, usePublicClient } from "wagmi";
 import CustomAlert from "./CustomAlert";
-import { walletContract } from "../config/contract";
+import { useWalletContract } from "../context/ActiveWallet";
 import type { AlertData } from "../types";
 
 function SetLimit() {
+  const walletContract = useWalletContract();
   const [limitAddress, setLimitAddress] = useState("");
   const [limitAmount, setLimitAmount] = useState("");
   const [alertData, setAlertData] = useState<AlertData | null>(null);

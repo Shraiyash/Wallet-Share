@@ -1,6 +1,6 @@
 import { useAccount, useBalance, useReadContract, useWatchContractEvent } from "wagmi";
 import { formatEther } from "viem";
-import { walletContract, contractAddress } from "../config/contract";
+import { useWalletContract, useActiveWallet } from "../context/ActiveWallet";
 
 /** Whether the connected account may use the wallet, or why we can't say yet. */
 export type AccessStatus = "loading" | "error" | "allowed" | "denied";
@@ -13,22 +13,25 @@ export type AccessStatus = "loading" | "error" | "allowed" | "denied";
  */
 export function useWalletState() {
   const { address, isConnected } = useAccount();
+  const walletContract = useWalletContract();
+  const { activeWallet } = useActiveWallet();
 
   const {
     data: balance,
     refetch: refetchBalance,
-  } = useBalance({ address: contractAddress });
+  } = useBalance({ address: activeWallet ?? undefined, query: { enabled: Boolean(activeWallet) } });
 
   const { data: ownerAddress } = useReadContract({
     ...walletContract,
     functionName: "owner",
+    query: { enabled: Boolean(activeWallet) },
   });
 
   const { data: isOwner } = useReadContract({
     ...walletContract,
     functionName: "isOwner",
     args: address ? [address] : undefined,
-    query: { enabled: Boolean(address) },
+    query: { enabled: Boolean(address) && Boolean(activeWallet) },
   });
 
   // isAllowed() reads msg.sender, so the call must originate from the
@@ -42,7 +45,7 @@ export function useWalletState() {
     ...walletContract,
     functionName: "isAllowed",
     account: address,
-    query: { enabled: Boolean(address) },
+    query: { enabled: Boolean(address) && Boolean(activeWallet) },
   });
 
   // Event-driven balance refresh (replaces the old polling interval).
@@ -61,7 +64,7 @@ export function useWalletState() {
   // `data === undefined`. Collapsing those into a boolean makes every
   // transient RPC error look like a denial and locks out even the owner, so
   // keep the three outcomes distinct and let the UI handle each one.
-  const accessStatus: AccessStatus = !address
+  const accessStatus: AccessStatus = !address || !activeWallet
     ? "loading"
     : isAllowedError
       ? "error"

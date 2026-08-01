@@ -3,10 +3,12 @@ import { motion, AnimatePresence } from "framer-motion";
 import { isAddress, BaseError } from "viem";
 import { useReadContract, useWriteContract, usePublicClient } from "wagmi";
 import CustomAlert from "./CustomAlert";
-import { walletContract } from "../config/contract";
+import { useWalletContract } from "../context/ActiveWallet";
+import InviteLink from "./InviteLink";
 import type { AlertData } from "../types";
 
 function Admin() {
+  const walletContract = useWalletContract();
   const [accessAddress, setAccessAddress] = useState("");
   const [accessAllowed, setAccessAllowed] = useState(true);
   const [showAccessList, setShowAccessList] = useState(false);
@@ -45,6 +47,7 @@ function Admin() {
 
   return (
     <div className="admin-container">
+      <InviteLink />
       {alertData && (
         <CustomAlert alertData={alertData} onClose={() => setAlertData(null)} />
       )}

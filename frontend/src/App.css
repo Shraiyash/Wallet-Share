@@ -438,3 +438,142 @@ input {
 .glass-button:hover {
   background-color: #4189d2;   /* Darken on hover */
 }
+/* ---- Wallet picker / invites --------------------------------------------
+   Same language as the sign-in buttons: solid fills, pill geometry, hover is
+   a fill shift and nothing more. */
+
+.wallet-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: min(22rem, calc(100vw - 40px));
+  margin: 20px 0 8px;
+}
+
+.wallet-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  padding: 16px 22px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1rem;
+  color: #fff;
+  text-align: left;
+  background-color: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background-color 0.22s ease, transform 0.22s ease;
+}
+
+.wallet-card:hover {
+  background-color: rgba(255, 255, 255, 0.16);
+  transform: translateY(-1px);
+}
+
+.wallet-card-name {
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.wallet-card-role {
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.wallet-name-input {
+  width: 100%;
+  padding: 16px 22px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.95rem;
+  color: #fff;
+  background-color: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 999px;
+  outline: none;
+}
+
+.wallet-name-input::placeholder {
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.wallet-name-input:focus {
+  border-color: rgba(255, 255, 255, 0.32);
+}
+
+.wallet-error {
+  max-width: 26rem;
+  margin-top: 14px;
+  padding: 0 20px;
+  font-size: 0.85rem;
+  color: #ff9a9a;
+}
+
+.faucet-notice {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  width: min(26rem, calc(100vw - 40px));
+  margin-top: 20px;
+  padding: 20px;
+  background-color: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 20px;
+}
+
+.signin-hint {
+  margin: 0;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+/* The faucet link is an <a> styled as a button. */
+a.signin-btn {
+  text-decoration: none;
+}
+
+.invite-section {
+  margin-top: 24px;
+  text-align: left;
+}
+
+.invite-hint {
+  margin: 6px 0 14px;
+  font-size: 0.85rem;
+  line-height: 1.45;
+  color: #555;
+}
+
+.invite-link {
+  display: block;
+  width: 100%;
+  margin-bottom: 14px;
+  padding: 12px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.72rem;
+  color: #222;
+  background-color: #f2f3f5;
+  border-radius: 12px;
+  overflow-wrap: anywhere;
+}
+
+.nav-switch {
+  padding: 7px 14px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: rgba(255, 255, 255, 0.9);
+  background-color: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background-color 0.22s ease;
+}
+
+.nav-switch:hover {
+  background-color: rgba(255, 255, 255, 0.16);
+}

@@ -3,10 +3,11 @@ import { motion, useAnimation } from "framer-motion";
 import { isAddress, BaseError } from "viem";
 import { useWriteContract, usePublicClient } from "wagmi";
 import CustomAlert from "./CustomAlert";
-import { walletContract } from "../config/contract";
+import { useWalletContract } from "../context/ActiveWallet";
 import type { AlertData } from "../types";
 
 function AssignVoter() {
+  const walletContract = useWalletContract();
   const [voterAddress, setVoterAddress] = useState("");
   const [alertData, setAlertData] = useState<AlertData | null>(null);
 

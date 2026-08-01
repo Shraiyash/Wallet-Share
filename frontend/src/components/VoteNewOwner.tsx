@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { isAddress, BaseError } from "viem";
 import { useWriteContract, usePublicClient } from "wagmi";
 import CustomAlert from "./CustomAlert";
-import { walletContract } from "../config/contract";
+import { useWalletContract } from "../context/ActiveWallet";
 import type { AlertData } from "../types";
 
 type Props = {
@@ -11,6 +11,7 @@ type Props = {
 };
 
 function VoteNewOwner({ ownerAddress }: Props) {
+  const walletContract = useWalletContract();
   const [newOwnerAddress, setNewOwnerAddress] = useState("");
   const [alertData, setAlertData] = useState<AlertData | null>(null);
 
