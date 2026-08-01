@@ -592,7 +592,7 @@ a.signin-btn {
 }
 
 .navbar--refined .nav-items {
-  gap: 2px;
+  gap: 6px;
   padding: 5px;
   background-color: rgba(255, 255, 255, 0.06);
   border: 1px solid rgba(255, 255, 255, 0.12);
@@ -608,11 +608,12 @@ a.signin-btn {
 
 .navbar--refined .nav-item {
   font-family: 'Montserrat', sans-serif;
-  /* Same scale as the classic bar — only the presentation is refined. */
-  font-size: 1.2rem;
+  /* Just under the classic 1.2rem: at full size the pills read heavy inside
+     the glass track. */
+  font-size: 1.05rem;
   font-weight: 500;
   letter-spacing: -0.01em;
-  padding: 8px 18px;
+  padding: 9px 18px;
   border-radius: 999px;
   color: rgba(255, 255, 255, 0.72);
   transition: background-color 0.22s ease, color 0.22s ease;
@@ -634,7 +635,11 @@ a.signin-btn {
    rather than cross-fading two separate boxes. */
 .nav-pill {
   position: absolute;
-  inset: 0;
+  /* Inset rather than filling the item: combined with the gap, this keeps a
+     clear gutter so a selected pill and a hovered neighbour never appear to
+     touch. Apple's segmented control does the same — the pill floats inside
+     its segment rather than filling it. */
+  inset: 2px 3px;
   z-index: -1;
   border-radius: 999px;
 }
