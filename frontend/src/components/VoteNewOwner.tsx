@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { isAddress, BaseError } from "viem";
-import { useWriteContract, usePublicClient } from "wagmi";
 import CustomAlert from "./CustomAlert";
 import { useWalletContract } from "../context/ActiveWallet";
+import { useTxAction, txLabel } from "../hooks/useTxAction";
 import type { AlertData } from "../types";
 
 type Props = {
@@ -15,8 +15,7 @@ function VoteNewOwner({ ownerAddress }: Props) {
   const [newOwnerAddress, setNewOwnerAddress] = useState("");
   const [alertData, setAlertData] = useState<AlertData | null>(null);
 
-  const publicClient = usePublicClient();
-  const { writeContractAsync, isPending } = useWriteContract();
+  const { send, phase, isBusy } = useTxAction();
 
   async function handleVoteNewOwner() {
     if (!isAddress(newOwnerAddress)) {
@@ -24,12 +23,11 @@ function VoteNewOwner({ ownerAddress }: Props) {
       return;
     }
     try {
-      const hash = await writeContractAsync({
+      await send({
         ...walletContract,
         functionName: "voteForNewOwner",
         args: [newOwnerAddress],
       });
-      await publicClient?.waitForTransactionReceipt({ hash });
       setAlertData({ message: "Vote cast successfully!", type: "success" });
       setNewOwnerAddress("");
     } catch (err) {
@@ -76,8 +74,8 @@ function VoteNewOwner({ ownerAddress }: Props) {
             value={newOwnerAddress}
             onChange={(e) => setNewOwnerAddress(e.target.value)}
           />
-          <button onClick={handleVoteNewOwner} disabled={isPending}>
-            {isPending ? "Voting…" : "Vote"}
+          <button onClick={handleVoteNewOwner} disabled={isBusy}>
+            {txLabel(phase, "Vote", "Voting…")}
           </button>
         </div>
       </div>

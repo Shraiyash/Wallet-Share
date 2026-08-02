@@ -7,6 +7,7 @@ import { AppKitButton } from "@reown/appkit/react";
 import { factoryAbi, factoryAddress, factoryContract } from "../config/contract";
 import { useActiveWallet } from "../context/ActiveWallet";
 import { useMyWallets } from "../hooks/useMyWallets";
+import { RECEIPT_POLL_MS } from "../hooks/useTxAction";
 import FaucetNotice from "./FaucetNotice";
 
 /**
@@ -45,7 +46,12 @@ export default function WalletPicker() {
         args: [trimmed],
       });
 
-      const receipt = await publicClient!.waitForTransactionReceipt({ hash });
+      // Keeps its own receipt handling — the new wallet's address is read out
+      // of the logs below — but polls at the same brisk rate as every other write.
+      const receipt = await publicClient!.waitForTransactionReceipt({
+        hash,
+        pollingInterval: RECEIPT_POLL_MS,
+      });
 
       // Pull the new address straight out of the event rather than re-reading
       // the list and guessing which entry is the new one.

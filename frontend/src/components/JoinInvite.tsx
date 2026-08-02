@@ -6,6 +6,7 @@ import type { Address } from "viem";
 
 import { walletAbi } from "../config/contract";
 import { useActiveWallet } from "../context/ActiveWallet";
+import { RECEIPT_POLL_MS } from "../hooks/useTxAction";
 import FaucetNotice from "./FaucetNotice";
 
 /**
@@ -60,7 +61,10 @@ export default function JoinInvite({ onDone }: { onDone: () => void }) {
         functionName: "acceptInvite",
         args: [inviteId!, expiry, signature!],
       });
-      await publicClient!.waitForTransactionReceipt({ hash });
+      await publicClient!.waitForTransactionReceipt({
+        hash,
+        pollingInterval: RECEIPT_POLL_MS,
+      });
       setActiveWallet(wallet!);
       onDone();
     } catch (err) {

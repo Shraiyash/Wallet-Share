@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { motion, useAnimation } from "framer-motion";
 import { parseEther, isAddress, BaseError } from "viem";
-import { useWriteContract, usePublicClient } from "wagmi";
 import CustomAlert from "./CustomAlert";
 import { useWalletContract } from "../context/ActiveWallet";
+import { useTxAction, txLabel } from "../hooks/useTxAction";
 import type { AlertData } from "../types";
 
 type Props = {
@@ -16,8 +16,7 @@ function Transfer({ contractBalance }: Props) {
   const [transferAmount, setTransferAmount] = useState("");
   const [alertData, setAlertData] = useState<AlertData | null>(null);
 
-  const publicClient = usePublicClient();
-  const { writeContractAsync, isPending } = useWriteContract();
+  const { send, phase, isBusy } = useTxAction();
   const imageControls = useAnimation();
 
   useEffect(() => {
@@ -42,12 +41,11 @@ function Transfer({ contractBalance }: Props) {
     }
     if (!transferAmount) return;
     try {
-      const hash = await writeContractAsync({
+      await send({
         ...walletContract,
         functionName: "transferFunds",
         args: [transferTo, parseEther(transferAmount)],
       });
-      await publicClient?.waitForTransactionReceipt({ hash });
       setAlertData({ message: "Transfer Successful!", type: "success" });
       setTransferTo("");
       setTransferAmount("");
@@ -101,8 +99,8 @@ function Transfer({ contractBalance }: Props) {
             value={transferAmount}
             onChange={(e) => setTransferAmount(e.target.value)}
           />
-          <button onClick={handleTransfer} disabled={isPending}>
-            {isPending ? "Transferring…" : "Transfer"}
+          <button onClick={handleTransfer} disabled={isBusy}>
+            {txLabel(phase, "Transfer", "Transferring…")}
           </button>
         </div>
       </div>

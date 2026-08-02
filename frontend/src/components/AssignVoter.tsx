@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { motion, useAnimation } from "framer-motion";
 import { isAddress, BaseError } from "viem";
-import { useWriteContract, usePublicClient } from "wagmi";
 import CustomAlert from "./CustomAlert";
 import { useWalletContract } from "../context/ActiveWallet";
+import { useTxAction, txLabel } from "../hooks/useTxAction";
 import type { AlertData } from "../types";
 
 function AssignVoter() {
@@ -11,8 +11,7 @@ function AssignVoter() {
   const [voterAddress, setVoterAddress] = useState("");
   const [alertData, setAlertData] = useState<AlertData | null>(null);
 
-  const publicClient = usePublicClient();
-  const { writeContractAsync, isPending } = useWriteContract();
+  const { send, phase, isBusy } = useTxAction();
   const imageControls = useAnimation();
 
   useEffect(() => {
@@ -36,12 +35,11 @@ function AssignVoter() {
       return;
     }
     try {
-      const hash = await writeContractAsync({
+      await send({
         ...walletContract,
         functionName: "assignVoter",
         args: [voterAddress],
       });
-      await publicClient?.waitForTransactionReceipt({ hash });
       setAlertData({ message: "Voter assigned successfully!", type: "success" });
       setVoterAddress("");
     } catch (err) {
@@ -75,8 +73,8 @@ function AssignVoter() {
             value={voterAddress}
             onChange={(e) => setVoterAddress(e.target.value)}
           />
-          <button onClick={handleAssignVoter} disabled={isPending}>
-            {isPending ? "Assigning…" : "Assign Voter"}
+          <button onClick={handleAssignVoter} disabled={isBusy}>
+            {txLabel(phase, "Assign Voter", "Assigning…")}
           </button>
         </div>
       </div>

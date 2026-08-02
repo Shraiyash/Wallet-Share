@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { parseEther, isAddress, BaseError } from "viem";
-import { useWriteContract, usePublicClient } from "wagmi";
 import CustomAlert from "./CustomAlert";
 import { useWalletContract } from "../context/ActiveWallet";
+import { useTxAction, txLabel } from "../hooks/useTxAction";
 import type { AlertData } from "../types";
 
 function SetLimit() {
@@ -12,8 +12,7 @@ function SetLimit() {
   const [limitAmount, setLimitAmount] = useState("");
   const [alertData, setAlertData] = useState<AlertData | null>(null);
 
-  const publicClient = usePublicClient();
-  const { writeContractAsync, isPending } = useWriteContract();
+  const { send, phase, isBusy } = useTxAction();
 
   async function handleSetLimit() {
     if (!isAddress(limitAddress)) {
@@ -26,12 +25,11 @@ function SetLimit() {
       // Transfer.tsx sends parseEther(amount) (wei), so the limit is parseEther'd
       // too — otherwise a limit of "1" would mean 1 wei and every real transfer
       // would revert with "Transfer Limit Exceeded".
-      const hash = await writeContractAsync({
+      await send({
         ...walletContract,
         functionName: "setLimit",
         args: [limitAddress, parseEther(limitAmount)],
       });
-      await publicClient?.waitForTransactionReceipt({ hash });
       setAlertData({ message: "Limit set successfully!", type: "success" });
       setLimitAddress("");
       setLimitAmount("");
@@ -74,8 +72,8 @@ function SetLimit() {
             value={limitAmount}
             onChange={(e) => setLimitAmount(e.target.value)}
           />
-          <button onClick={handleSetLimit} disabled={isPending}>
-            {isPending ? "Setting…" : "Set Limit"}
+          <button onClick={handleSetLimit} disabled={isBusy}>
+            {txLabel(phase, "Set Limit", "Setting…")}
           </button>
         </div>
       </div>

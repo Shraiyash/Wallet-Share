@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { isAddress, BaseError } from "viem";
-import { useReadContract, useWriteContract, usePublicClient } from "wagmi";
+import { useReadContract } from "wagmi";
 import CustomAlert from "./CustomAlert";
 import { useWalletContract } from "../context/ActiveWallet";
+import { useTxAction, txLabel } from "../hooks/useTxAction";
 import InviteLink from "./InviteLink";
 import type { AlertData } from "../types";
 
@@ -14,10 +15,9 @@ function Admin() {
   const [showAccessList, setShowAccessList] = useState(false);
   const [alertData, setAlertData] = useState<AlertData | null>(null);
 
-  const publicClient = usePublicClient();
-  const { writeContractAsync, isPending } = useWriteContract();
+  const { send, phase, isBusy } = useTxAction();
 
-  const { data: accessList = [], refetch } = useReadContract({
+  const { data: accessList = [] } = useReadContract({
     ...walletContract,
     functionName: "getAllowedUsers",
   });
@@ -30,15 +30,13 @@ function Admin() {
       return;
     }
     try {
-      const hash = await writeContractAsync({
+      await send({
         ...walletContract,
         functionName: "setAccess",
         args: [accessAddress, accessAllowed],
       });
-      await publicClient?.waitForTransactionReceipt({ hash });
       setAlertData({ message: "Access set successfully!", type: "success" });
       setAccessAddress("");
-      refetch();
     } catch (err) {
       const message = err instanceof BaseError ? err.shortMessage : "Setting access failed!";
       setAlertData({ message, type: "failure" });
@@ -47,7 +45,6 @@ function Admin() {
 
   return (
     <div className="admin-container">
-      <InviteLink />
       {alertData && (
         <CustomAlert alertData={alertData} onClose={() => setAlertData(null)} />
       )}
@@ -79,6 +76,10 @@ function Admin() {
             </motion.div>
           )}
         </AnimatePresence>
+        {/* Inviting someone and granting them access are the same job seen from
+            two ends, so the invite panel belongs in this column with the access
+            list rather than floating as a third column of its own. */}
+        <InviteLink />
       </div>
       <div className="admin-right">
         <motion.img
@@ -106,8 +107,8 @@ function Admin() {
             <option value="true">Grant access</option>
             <option value="false">Revoke access</option>
           </select>
-          <button onClick={handleSetAccess} disabled={isPending}>
-            {isPending ? "Saving…" : "Set Access"}
+          <button onClick={handleSetAccess} disabled={isBusy}>
+            {txLabel(phase, "Set Access", "Saving…")}
           </button>
         </div>
       </div>

@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { parseEther, formatEther, BaseError } from "viem";
-import { useAccount, useReadContract, useWriteContract, usePublicClient } from "wagmi";
+import { useAccount, useReadContract } from "wagmi";
 import CustomAlert from "./CustomAlert";
 import { useWalletContract } from "../context/ActiveWallet";
+import { useTxAction, txLabel } from "../hooks/useTxAction";
 import type { AlertData } from "../types";
 
 function Deposit() {
@@ -13,12 +14,11 @@ function Deposit() {
   const [hasDeposited, setHasDeposited] = useState(false);
 
   const { address } = useAccount();
-  const publicClient = usePublicClient();
-  const { writeContractAsync, isPending } = useWriteContract();
+  const { send, phase, isBusy } = useTxAction();
 
   // Per-user deposit total, read straight from the chain and cached by
-  // React Query. `refetch` runs after a successful deposit.
-  const { data: userDepositTotal, refetch } = useReadContract({
+  // React Query. `useTxAction` invalidates it once the deposit confirms.
+  const { data: userDepositTotal } = useReadContract({
     ...walletContract,
     functionName: "userDeposits",
     args: address ? [address] : undefined,
@@ -28,16 +28,14 @@ function Deposit() {
   async function handleDeposit() {
     if (!depositAmount) return;
     try {
-      const hash = await writeContractAsync({
+      await send({
         ...walletContract,
         functionName: "deposit",
         value: parseEther(depositAmount),
       });
-      await publicClient?.waitForTransactionReceipt({ hash });
       setAlertData({ message: "Deposit successful!", type: "success" });
       if (!hasDeposited) setHasDeposited(true);
       setDepositAmount("");
-      refetch();
     } catch (err) {
       const message = err instanceof BaseError ? err.shortMessage : "Deposit failed!";
       setAlertData({ message, type: "failure" });
@@ -46,11 +44,19 @@ function Deposit() {
 
   const formattedTotal = userDepositTotal ? formatEther(userDepositTotal) : "0.0";
 
+  // The updated total used to animate in over 1.2s once you had deposited —
+  // slower than the first render, so the one moment you are watching the number
+  // was the one it took longest to arrive. It now settles quickly on entry and
+  // faster still on every update after.
   const animationProps = {
     initial: { x: -100, opacity: 0 },
     animate: { x: 0, opacity: 1 },
     exit: { x: 100, opacity: 0 },
-    transition: { delay: 0.2, duration: hasDeposited ? 1.0 : 0.5, ease: "easeInOut" as const },
+    transition: {
+      delay: hasDeposited ? 0 : 0.2,
+      duration: hasDeposited ? 0.28 : 0.5,
+      ease: "easeInOut" as const,
+    },
   };
 
   return (
@@ -84,8 +90,8 @@ function Deposit() {
             value={depositAmount}
             onChange={(e) => setDepositAmount(e.target.value)}
           />
-          <button onClick={handleDeposit} disabled={isPending}>
-            {isPending ? "Depositing…" : "Deposit"}
+          <button onClick={handleDeposit} disabled={isBusy}>
+            {txLabel(phase, "Deposit", "Depositing…")}
           </button>
         </div>
       </div>
