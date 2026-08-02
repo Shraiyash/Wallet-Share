@@ -25,6 +25,7 @@ import Admin from "./components/Admin";
 import Members from "./components/Members";
 import WalletPicker from "./components/WalletPicker";
 import JoinInvite from "./components/JoinInvite";
+import WalletMenu from "./components/WalletMenu";
 import { useWalletState } from "./hooks/useWalletState";
 import { ActiveWalletProvider, useActiveWallet } from "./context/ActiveWallet";
 
@@ -49,6 +50,9 @@ function Shell() {
     address,
     ownerAddress,
     contractBalance,
+    refetchBalance,
+    balanceUpdatedAt,
+    isBalanceFetching,
   } = useWalletState();
   const { activeWallet, setActiveWallet } = useActiveWallet();
   const location = useLocation();
@@ -118,7 +122,15 @@ function Shell() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0, transition: { duration: 1 } }}
             >
-              <NavBar isOwner={isOwner} onSwitchWallet={() => setActiveWallet(null)} />
+              <NavBar
+                isOwner={isOwner}
+                activeWallet={activeWallet}
+                contractBalance={contractBalance}
+                balanceUpdatedAt={balanceUpdatedAt}
+                isBalanceFetching={isBalanceFetching}
+                onRefreshBalance={() => refetchBalance()}
+                onSwitchWallet={() => setActiveWallet(null)}
+              />
               <Routes>
                 <Route
                   path="/"
@@ -299,10 +311,23 @@ function RequestAccess({ address, onRecheck, onBack }: RequestAccessProps) {
 
 type NavBarProps = {
   isOwner: boolean;
+  activeWallet: `0x${string}`;
+  contractBalance: string;
+  balanceUpdatedAt: number;
+  isBalanceFetching: boolean;
+  onRefreshBalance: () => void;
   onSwitchWallet: () => void;
 };
 
-function NavBar({ isOwner, onSwitchWallet }: NavBarProps) {
+function NavBar({
+  isOwner,
+  activeWallet,
+  contractBalance,
+  balanceUpdatedAt,
+  isBalanceFetching,
+  onRefreshBalance,
+  onSwitchWallet,
+}: NavBarProps) {
   const linkClass = ({ isActive }: { isActive: boolean }) =>
     isActive ? "nav-item active" : "nav-item";
 
@@ -364,9 +389,17 @@ function NavBar({ isOwner, onSwitchWallet }: NavBarProps) {
         ))}
       </div>
       <div className="nav-right">
-        <button className="nav-switch" onClick={onSwitchWallet}>
-          Switch wallet
-        </button>
+        {/* The wallet's balance takes the slot "Switch wallet" used to hold —
+            it is the thing people check constantly, and switching is not. */}
+        <WalletMenu
+          activeWallet={activeWallet}
+          isOwner={isOwner}
+          balance={contractBalance}
+          balanceUpdatedAt={balanceUpdatedAt}
+          isBalanceFetching={isBalanceFetching}
+          onRefreshBalance={onRefreshBalance}
+          onSwitchWallet={onSwitchWallet}
+        />
         {/* balance="hide": the chip shows your personal account balance, which
             is confusingly different from the contract's "Wallet Balance" on the
             dashboard. Hide it so the only ETH figure is the wallet's. */}

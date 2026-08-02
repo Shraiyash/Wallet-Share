@@ -19,6 +19,10 @@ export function useWalletState() {
   const {
     data: balance,
     refetch: refetchBalance,
+    // Surfaced so the nav can say when the figure was last confirmed against
+    // the chain, rather than leaving the user to wonder whether it is current.
+    dataUpdatedAt: balanceUpdatedAt,
+    isFetching: isBalanceFetching,
   } = useBalance({ address: activeWallet ?? undefined, query: { enabled: Boolean(activeWallet) } });
 
   const { data: ownerAddress } = useReadContract({
@@ -83,5 +87,7 @@ export function useWalletState() {
     refetchAccess,
     contractBalance: balance ? formatEther(balance.value) : "0",
     refetchBalance,
+    balanceUpdatedAt,
+    isBalanceFetching,
   };
 }

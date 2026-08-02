@@ -535,29 +535,66 @@ a.signin-btn {
   text-decoration: none;
 }
 
+/* The invite panel lives in the admin page's left column, under the access
+   list, so it is built from the same translucent material as .access-list and
+   .glass-container. It used to carry .section — a white card — which is what
+   made it read as a stray element dropped on top of the page. The 450px cap
+   matches .access-list so the whole column lines up on one edge. */
 .invite-section {
-  margin-top: 24px;
+  width: 100%;
+  max-width: 450px;
+  margin-top: 20px;
+  padding: 18px 20px;
   text-align: left;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 20px;
+  box-sizing: border-box;
 }
 
-.invite-hint {
+.invite-section h3 {
+  margin: 0;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: #f8f8f8;
+}
+
+/* Scoped past `.admin-left p`, which is more specific than a bare .invite-hint
+   and would otherwise repaint this at 1.2rem in near-white. */
+.invite-section .invite-hint {
   margin: 6px 0 14px;
   font-size: 0.85rem;
   line-height: 1.45;
-  color: #555;
+  text-align: left;
+  color: rgba(255, 255, 255, 0.6);
 }
 
-.invite-link {
+.invite-section .invite-link {
   display: block;
   width: 100%;
   margin-bottom: 14px;
   padding: 12px;
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: 0.72rem;
-  color: #222;
-  background-color: #f2f3f5;
+  color: rgba(255, 255, 255, 0.88);
+  background-color: rgba(255, 255, 255, 0.1);
   border-radius: 12px;
   overflow-wrap: anywhere;
+  box-sizing: border-box;
+}
+
+/* The buttons fill the panel rather than the 22rem the sign-in page wants. */
+.invite-section .signin-panel {
+  width: 100%;
+}
+
+.invite-section .wallet-error {
+  max-width: 100%;
+  padding: 0;
+  font-size: 0.85rem;
+  color: #ff9a9a;
 }
 
 .nav-switch {
@@ -806,4 +843,275 @@ a.signin-btn {
   display: inline-flex;
   align-items: center;
   height: var(--bar-height);
+}
+
+/* ---- Balance readout + wallet menu ---------------------------------------
+   Same frosted track as the nav items, so the right-hand side reads as part of
+   the same strip rather than a widget parked next to it. Every button below
+   resets `margin` and its hover colour explicitly: index.css sets
+   `button { margin-top: 10px }` and `button:hover { background: #6021d4 }`
+   globally, which otherwise drops these out of line and turns them solid
+   purple on hover. */
+
+.wallet-menu {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: var(--bar-height, 38px);
+}
+
+.wallet-balance-pill {
+  display: inline-flex;
+  /* `baseline` here is what made the readout sit against the top edge: in a
+     fixed-height flex line, baseline alignment pushes the whole group to the
+     start of the cross axis instead of centring it. */
+  align-items: center;
+  gap: 6px;
+  height: var(--bar-height, 38px);
+  margin: 0;
+  padding: 0 16px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  /* Montserrat's default line box is taller than the glyphs, which re-creates
+     the same off-centre look even once alignment is correct. */
+  line-height: 1;
+  letter-spacing: -0.01em;
+  color: #fff;
+  background-color: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  cursor: pointer;
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.09),
+    0 6px 24px rgba(0, 0, 0, 0.28);
+  /* Digits change width as the balance ticks, which makes the pill twitch. */
+  font-variant-numeric: tabular-nums;
+  transition: background-color 0.22s ease;
+}
+
+.wallet-balance-pill:hover,
+.wallet-balance-pill.is-open {
+  background-color: rgba(139, 92, 246, 0.22);
+}
+
+/* The affordance the pill was missing: without it the control reads as a
+   label, and nobody clicks a label. */
+.wallet-balance-caret {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.45);
+  transition: transform 0.22s ease;
+}
+
+.wallet-balance-pill.is-open .wallet-balance-caret {
+  transform: rotate(180deg);
+}
+
+/* Sized and coloured like the nav's resting label rather than a second value,
+   so the pill reads as one number with a unit after it. */
+.wallet-balance-unit {
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  color: rgba(255, 255, 255, 0.45);
+  /* Optical, not metric: the cap-height of "ETH" against the digits' is what
+     the eye reads as level, and centring alone leaves it sitting a touch high. */
+  transform: translateY(0.5px);
+}
+
+.wallet-gear {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--bar-height, 38px);
+  height: var(--bar-height, 38px);
+  margin: 0;
+  padding: 0;
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.72);
+  background-color: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  cursor: pointer;
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.09),
+    0 6px 24px rgba(0, 0, 0, 0.28);
+  transition: background-color 0.22s ease, color 0.22s ease;
+}
+
+.wallet-gear:hover,
+.wallet-gear--open {
+  background-color: rgba(139, 92, 246, 0.22);
+  color: #fff;
+}
+
+/* The sheet ------------------------------------------------------------- */
+
+.wallet-sheet {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  z-index: 50;
+  width: 288px;
+  padding: 14px;
+  text-align: left;
+  font-family: 'Montserrat', sans-serif;
+  /* Darker than the bar: a panel floating over content needs to be legible
+     against whatever it covers, which the 6% track fill is not. */
+  background-color: rgba(28, 28, 32, 0.82);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 18px;
+  backdrop-filter: blur(30px) saturate(180%);
+  -webkit-backdrop-filter: blur(30px) saturate(180%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.09),
+    0 18px 48px rgba(0, 0, 0, 0.45);
+}
+
+.wallet-sheet-head {
+  padding: 2px 8px 12px;
+}
+
+.wallet-sheet-name {
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: #fff;
+}
+
+.wallet-sheet-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 5px;
+}
+
+.wallet-sheet-meta code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.wallet-role {
+  padding: 2px 8px;
+  font-size: 0.68rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #d9c9ff;
+  background-color: rgba(139, 92, 246, 0.22);
+  border-radius: 999px;
+}
+
+/* The balance panel leads with the number at a size you can read across a
+   desk, because that is the one thing it exists to answer. */
+.wallet-sheet-hero {
+  padding: 4px 12px 14px;
+}
+
+.wallet-sheet-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.wallet-sheet-figure {
+  margin-top: 6px;
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  color: #fff;
+  font-variant-numeric: tabular-nums;
+  /* A full-precision wei figure is 20 characters and must not widen the sheet. */
+  overflow-wrap: anywhere;
+}
+
+.wallet-sheet-figure span {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+/* Answers "is this current?" without the user having to press anything. */
+.wallet-sheet-fresh {
+  margin-top: 6px;
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.wallet-sheet-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: 8px;
+}
+
+.wallet-action {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  margin: 0;
+  padding: 9px 12px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  text-align: left;
+  text-decoration: none;
+  color: rgba(255, 255, 255, 0.82);
+  background-color: transparent;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.18s ease, color 0.18s ease;
+}
+
+.wallet-action:hover {
+  color: #fff;
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+/* Refresh disables itself mid-flight; without this it still looks pressable. */
+.wallet-action:disabled {
+  color: rgba(255, 255, 255, 0.4);
+  background-color: transparent;
+  cursor: default;
+}
+
+.wallet-action svg {
+  flex: 0 0 auto;
+  font-size: 0.95rem;
+  opacity: 0.7;
+}
+
+/* Sign out is the one entry here you can't undo with another click. */
+.wallet-action--danger {
+  color: #ff8a80;
+}
+
+.wallet-action--danger:hover {
+  color: #ff6f60;
+  background-color: rgba(255, 107, 96, 0.12);
+}
+
+.wallet-sheet-divider {
+  height: 1px;
+  margin: 10px 4px 2px;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.wallet-icon-spin {
+  animation: wallet-spin 0.7s linear infinite;
+}
+
+@keyframes wallet-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
