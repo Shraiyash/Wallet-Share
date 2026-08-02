@@ -96,7 +96,7 @@ export default function InviteLink() {
   if (!isOwner) return null;
 
   return (
-    <div className="section invite-section">
+    <div className="invite-section">
       <h3>Invite someone</h3>
       <p className="invite-hint">
         Creates a link anyone can use once to join this wallet. No transaction,

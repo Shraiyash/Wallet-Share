@@ -3,6 +3,9 @@
     display: flex;
     flex-direction: row;
     width: 100%;
+    /* Duplicated from index.css: whichever of the two sheets the bundler puts
+       last has to keep the page centred. */
+    min-height: var(--page-min-height);
     padding: 20px;
     box-sizing: border-box;
   }

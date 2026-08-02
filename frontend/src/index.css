@@ -1,6 +1,14 @@
 /* Global Styles */
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Montserrat:wght@400;700&display=swap');
 
+:root {
+  /* Height a page body has to fill to sit centred under the navbar, matching
+     what `.home-container` already does. Without it a page is only as tall as
+     its content, so it stays pinned under the nav and drifts upward as zooming
+     out makes the viewport taller. */
+  --page-min-height: calc(100vh - 80px);
+}
+
 body {
   margin: 0;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -429,6 +437,7 @@ button {
   display: flex;
   flex-direction: row;
   width: 100%;
+  min-height: var(--page-min-height);
   padding: 20px;
   box-sizing: border-box;
 }
@@ -482,6 +491,7 @@ button {
   display: flex;
   flex-direction: row;
   width: 100%;
+  min-height: var(--page-min-height);
   padding: 20px;
   box-sizing: border-box;
 }
@@ -540,6 +550,7 @@ transfer-curr-bal h3 {
   display: flex;
   flex-direction: row;
   width: 100%;
+  min-height: var(--page-min-height);
   padding: 20px;
   box-sizing: border-box;
 }
@@ -589,6 +600,7 @@ transfer-curr-bal h3 {
   display: flex;
   flex-direction: row;
   width: 100%;
+  min-height: var(--page-min-height);
   padding: 20px;
   box-sizing: border-box;
 }
@@ -645,6 +657,7 @@ curr-owner h3 {
   display: flex;
   flex-direction: row;
   width: 100%;
+  min-height: var(--page-min-height);
   padding: 20px;
   box-sizing: border-box;
 }
@@ -694,6 +707,7 @@ curr-owner h3 {
   display: flex;
   flex-direction: row;
   width: 100%;
+  min-height: var(--page-min-height);
   padding: 20px;
   box-sizing: border-box;
 }
@@ -711,12 +725,19 @@ curr-owner h3 {
   /* margin-right: 50px; */
 }
 
+/* No 100px top margin here, unlike the other pages' left columns. Those hold a
+   heading and nothing else, so the margin is what stops them floating; this one
+   stacks a heading, the access list and the invite panel, so the column's own
+   centring does that job and the margin would only push the stack off-centre.
+   The 450px cap matches .access-list and .invite-section below it. */
 .admin-left h1 {
   font-size: 2rem;
   color: #f8f8f8;
   text-align: center;
-  margin-top: 100px;
+  margin-top: 0;
+  margin-bottom: 8px;
   margin-left: 0px;
+  max-width: 450px;
 }
 
 .admin-left h2 {
@@ -776,6 +797,55 @@ curr-owner h3 {
   color: #f5cc02;
 }
 
+/* On the admin page the access list sits directly above the invite panel, so
+   the two have to be cut from the same material — the base .access-list fill is
+   twice as bright and read as a different component stacked on the first. Only
+   this page's copy changes; the Members page still uses the original. */
+.admin-left .access-list {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 20px;
+  padding: 18px 20px;
+}
+
+.admin-left .access-list h3 {
+  margin: 0 0 10px;
+  font-size: 1.05rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  text-align: left;
+  color: #f8f8f8;
+}
+
+.admin-left .access-list ul {
+  margin: 0;
+  text-align: left;
+}
+
+/* The empty state, which `.admin-left p` would otherwise blow up to 1.2rem. */
+.admin-left .access-list p {
+  margin: 0;
+  font-size: 0.85rem;
+  text-align: left;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* A 42-character address set at 1rem Montserrat is wider than the panel and ran
+   off its edge. Monospace at this size fits one address per line and lines the
+   rows up with each other, matching how .invite-link renders the invite URL. */
+.admin-left .access-list li {
+  padding: 10px 0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.78rem;
+  overflow-wrap: anywhere;
+}
+
+/* The shared rule gives every row a bottom border, which leaves the last one
+   underlining nothing but the panel's own padding. */
+.admin-left .access-list li:last-child {
+  border-bottom: none;
+}
+
 /* Right side: GIF and input field stacked vertically */
 .admin-right {
   flex: 1;
@@ -797,7 +867,9 @@ curr-owner h3 {
 
 .members-container {
   width: 100%;
-  min-height: 100vh;
+  /* Was a flat 100vh, which pushed the navbar's height past the bottom of the
+     screen and left a scrollbar on a page that fits. */
+  min-height: var(--page-min-height);
   display: flex;
   flex-direction: column;
   justify-content: center;
