@@ -29,9 +29,9 @@ Verify with `git diff` that nothing debug-related is about to be committed.
 ## 4. Verify the deployed state
 
 - `npx hardhat test` — expect all tests passing, report the count
-- `curl -s -o /dev/null -w "%{http_code}" https://smart-wallet-wheat.vercel.app` — expect 200
+- `curl -s -o /dev/null -w "%{http_code}" https://smart-wallet-yash.vercel.app` — expect 200
 - If the frontend changed this session but wasn't deployed, **say so explicitly** rather than deploying without being asked — deploys are the user's call
-- Note the production alias: `cd frontend && npx vercel inspect smart-wallet-wheat.vercel.app`
+- Note the production alias: `cd frontend && npx vercel inspect smart-wallet-yash.vercel.app`
 
 ## 5. Update memory
 
